@@ -1,0 +1,4 @@
+import { Text, View } from 'react-native';
+import { Transaction } from '@/src/db/database';
+import { rial, shortDate } from '@/src/utils/format';
+export function TransactionRow({item}:{item:Transaction}){const income=item.type==='income'; return <View className="mb-2 flex-row items-center rounded-3xl bg-white p-4 dark:bg-slate-900"><View className="h-12 w-12 items-center justify-center rounded-2xl bg-brand-50 dark:bg-brand-700/20"><Text className="text-xl">{item.category_icon}</Text></View><View className="mr-3 flex-1"><Text className="font-vazir text-[15px] font-semibold text-ink dark:text-white">{item.category_name}</Text><Text className="mt-1 font-vazir text-xs text-muted">{item.note || item.account_name} • {shortDate(item.date)}</Text></View><Text className={`font-vazir text-sm font-bold ${income?'text-brand-600':'text-rose-500'}`}>{income?'+':'−'} {rial(item.amount/10)} تومان</Text></View>}
