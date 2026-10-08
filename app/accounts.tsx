@@ -66,7 +66,7 @@ export default function Accounts() {
 
   const form = (
     <SurfaceCard>
-      <Text className="font-sans-bold text-base text-ink">
+      <Text className="font-sans-bold text-base text-ink text-left">
         {editing ? "ویرایش حساب" : "افزودن حساب"}
       </Text>
       <View className="mt-4">
@@ -102,14 +102,17 @@ export default function Accounts() {
   );
 
   return (
-    <Screen>
+    <Screen
+      header={
+        <ScreenHeader
+          title="حساب‌ها"
+          subtitle="مدیریت موجودی و کیف پول‌ها"
+          onBack={() => router.back()}
+        />
+      }
+    >
       <ScreenScroll keyboard>
-        <Content className="pt-4">
-          <ScreenHeader
-            title="حساب‌ها"
-            subtitle="مدیریت موجودی و کیف پول‌ها"
-            onBack={() => router.back()}
-          />
+        <Content>
           <View className={isWide ? "flex-row gap-6" : ""}>
             <View className={isWide ? "flex-1" : ""}>
               {accounts.length ? (
@@ -120,7 +123,7 @@ export default function Accounts() {
                   >
                     <View className="flex-row items-center">
                       <DoodleIcon name="wallet" size={40} />
-                      <View className="mr-3 flex-1">
+                      <View className="mr-3 flex-1 items-start">
                         <Text className="font-sans-bold text-base text-ink">
                           {account.name}
                         </Text>

@@ -151,8 +151,8 @@ export default function Transactions() {
   );
 
   return (
-    <Screen>
-      <Content className="flex-1 pt-4">
+    <Screen
+      header={
         <ScreenHeader
           title="تراکنش‌ها"
           subtitle={`${items.length} تراکنش در این نما`}
@@ -171,6 +171,9 @@ export default function Transactions() {
             )
           }
         />
+      }
+    >
+      <Content className="flex-1">
         <SearchField
           value={q}
           onChangeText={setQ}

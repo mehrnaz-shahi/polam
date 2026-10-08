@@ -41,7 +41,7 @@ export function TransactionRow({
         <Text
           numberOfLines={1}
           adjustsFontSizeToFit
-          className={`font-sans-bold text-sm ${income ? "text-success" : "text-error"}`}
+          className={`font-num-bold text-sm ${income ? "text-success" : "text-error"}`}
         >
           {income ? "+" : "−"} {rial(item.amount / 10)} تومان
         </Text>

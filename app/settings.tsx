@@ -36,18 +36,21 @@ export default function Settings() {
   ];
 
   return (
-    <Screen>
+    <Screen
+      header={
+        <ScreenHeader
+          title="تنظیمات"
+          subtitle="ظاهر و اطلاعات برنامه"
+          onBack={() => router.back()}
+        />
+      }
+    >
       <ScreenScroll>
-        <Content className="pt-4">
-          <ScreenHeader
-            title="تنظیمات"
-            subtitle="ظاهر و اطلاعات برنامه"
-            onBack={() => router.back()}
-          />
+        <Content>
           <View className={isWide ? "flex-row gap-6" : ""}>
             <View className={isWide ? "flex-1" : ""}>
-              <Text className="mb-3 font-sans-semibold text-sm text-ink">
-                ظاهر برنامه
+              <Text className="mb-3 font-sans-semibold text-sm text-ink text-left">
+                تم برنامه
               </Text>
               {options.map((option) => {
                 const active = selected === option.value;
@@ -65,7 +68,7 @@ export default function Settings() {
                     <View className="h-11 w-11 items-center justify-center rounded-2xl bg-fill">
                       <Icon size={20} color={colors.primary} strokeWidth={1.75} />
                     </View>
-                    <View className="mr-3 flex-1">
+                    <View className="ms-3 flex-1 items-start">
                       <Text className="font-sans-semibold text-sm text-ink">
                         {option.label}
                       </Text>
@@ -83,10 +86,10 @@ export default function Settings() {
               })}
             </View>
             <SurfaceCard className={isWide ? "w-[42%] self-start" : "mt-5"}>
-              <Text className="font-sans-bold text-base text-ink">
+              <Text className="font-sans-bold text-base text-ink text-left">
                 پولکی آفلاین
               </Text>
-              <Text className="mt-2 font-sans text-xs leading-6 text-muted">
+              <Text className="mt-2 font-sans text-xs leading-6 text-muted text-left">
                 تمام داده‌های مالی در همین دستگاه نگهداری می‌شوند و Phase 1 بدون حساب کاربری و بدون
                 اتصال به سرور کار می‌کند.
               </Text>

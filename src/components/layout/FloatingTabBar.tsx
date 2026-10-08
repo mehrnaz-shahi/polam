@@ -86,11 +86,13 @@ export function FloatingTabBar({ state, navigation }: FloatingTabBarProps) {
         left: 20,
         right: 20,
         bottom: Math.max(insets.bottom, 14),
+        direction: "rtl",
       }}
     >
       <View
         className="h-[68px] flex-row items-center rounded-full border border-line bg-panel"
         style={{
+          direction: "rtl",
           shadowColor: colors.textPrimary,
           shadowOpacity: 0.08,
           shadowRadius: 18,

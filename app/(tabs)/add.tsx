@@ -7,10 +7,9 @@ export default function Add() {
   const router = useRouter();
   const { isWide } = useResponsive();
   return (
-    <Screen>
-      <ScreenScroll contentContainerClassName="flex-grow justify-center">
-        <Content className="pb-36 pt-8">
-          <ScreenHeader title="ثبت تراکنش" subtitle="چه چیزی می‌خواهید ثبت کنید؟" />
+    <Screen header={<ScreenHeader title="ثبت تراکنش" subtitle="چه چیزی می‌خواهید ثبت کنید؟" />}>
+      <ScreenScroll contentContainerClassName="flex-grow">
+        <Content>
           <View className={isWide ? "flex-row gap-4" : "gap-3"}>
             <View className={isWide ? "flex-1" : ""}>
               <MenuCard

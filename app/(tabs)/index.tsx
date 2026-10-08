@@ -44,7 +44,7 @@ export default function Home() {
       >
         <Content className="pb-36 pt-4">
           <View className="mb-6 flex-row items-center">
-            <View className="flex-1">
+            <View className="flex-1 flex items-start">
               <Text className="font-sans text-sm text-muted">سلام، خوش آمدید</Text>
               <Text className="mt-1 font-sans-bold text-2xl text-ink">
                 وضعیت مالی شما

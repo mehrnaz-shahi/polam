@@ -9,7 +9,7 @@ import {
   listAccounts,
   listCategories,
 } from "@/src/db/database";
-import { toman } from "@/src/utils/format";
+import { parseAmount, toman } from "@/src/utils/format";
 import { Content, Screen, ScreenHeader, ScreenScroll, useResponsive } from "../layout/Screen";
 import {
   AmountInput,
@@ -65,7 +65,7 @@ export function TransactionForm({
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
   const parsed = useMemo(
-    () => Number(amount.replace(/[٬,\s]/g, "")),
+    () => parseAmount(amount),
     [amount],
   );
 
@@ -148,24 +148,22 @@ export function TransactionForm({
   );
 
   return (
-    <Screen>
+    <Screen
+      header={
+        <ScreenHeader
+          title={title}
+          subtitle={transaction ? "جزئیات را ویرایش کنید" : "اطلاعات تراکنش را وارد کنید"}
+          onBack={() => router.back()}
+          trailing={
+            onDelete ? (
+              <IconButton icon="trash-outline" label="حذف تراکنش" danger onPress={onDelete} />
+            ) : undefined
+          }
+        />
+      }
+    >
       <ScreenScroll keyboard>
-        <Content className="pt-4">
-          <ScreenHeader
-            title={title}
-            subtitle={transaction ? "جزئیات را ویرایش کنید" : "اطلاعات تراکنش را وارد کنید"}
-            onBack={() => router.back()}
-            trailing={
-              onDelete ? (
-                <IconButton
-                  icon="trash-outline"
-                  label="حذف تراکنش"
-                  danger
-                  onPress={onDelete}
-                />
-              ) : undefined
-            }
-          />
+        <Content>
           <View className={isWide ? "flex-row gap-6" : ""}>
             <View className={isWide ? "w-[38%]" : ""}>
               <AmountInput

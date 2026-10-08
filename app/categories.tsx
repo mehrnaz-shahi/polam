@@ -8,7 +8,8 @@ import {
   Category,
   updateCategory,
 } from "@/src/db/database";
-import { Content, Screen, ScreenHeader, ScreenScroll, useResponsive } from "@/src/components/layout/Screen";
+import { Content, nudgeFocusedField, Screen, ScreenHeader, ScreenScroll, useResponsive } from "@/src/components/layout/Screen";
+import { usePalette } from "@/src/theme/colors";
 import {
   ChipRow,
   EmptyState,
@@ -19,8 +20,14 @@ import {
   SurfaceCard,
 } from "@/src/components/ui";
 
+function takeIcon(value: string) {
+  const icons = Array.from(value.replace(/\s/g, ""));
+  return icons.length ? icons[icons.length - 1] : "";
+}
+
 export default function Categories() {
   const router = useRouter();
+  const colors = usePalette();
   const { isWide } = useResponsive();
   const [items, setItems] = useState<Category[]>([]);
   const [type, setType] = useState<"expense" | "income">("expense");
@@ -40,8 +47,9 @@ export default function Categories() {
 
   const save = async () => {
     if (!name.trim()) return;
-    if (editing) await updateCategory(editing, name.trim(), icon);
-    else await addCategory({ name: name.trim(), type, icon, parentId: parent });
+    const nextIcon = icon.trim() || "✨";
+    if (editing) await updateCategory(editing, name.trim(), nextIcon);
+    else await addCategory({ name: name.trim(), type, icon: nextIcon, parentId: parent });
     setName("");
     setIcon("✨");
     setParent(null);
@@ -57,10 +65,10 @@ export default function Categories() {
 
   const form = (
     <SurfaceCard>
-      <Text className="font-sans-bold text-base text-ink">
+      <Text className="font-sans-bold text-base text-ink text-left">
         {editing ? "ویرایش دسته‌بندی" : "دسته‌بندی جدید"}
       </Text>
-      <Text className="mb-2 mt-4 font-sans text-xs text-muted">دسته اصلی (اختیاری)</Text>
+      <Text className="mb-2 mt-4 font-sans text-xs text-muted text-left">دسته اصلی (اختیاری)</Text>
       <ChipRow>
         <FilterChip label="بدون والد" selected={!parent} onPress={() => setParent(null)} />
         {items
@@ -75,12 +83,31 @@ export default function Categories() {
             />
           ))}
       </ChipRow>
-      <View className="mt-4 flex-row gap-2">
-        <TextInput
-          value={icon}
-          onChangeText={setIcon}
-          className="h-14 w-16 rounded-2xl border border-line bg-panel text-center font-sans text-xl text-ink"
-        />
+      <View className="mt-4 flex-row items-end gap-3">
+        <View className="items-center">
+          <Text className="mb-2 font-sans-semibold text-sm text-ink">آیکون</Text>
+          <View className="h-14 w-14 items-center justify-center rounded-2xl border border-line bg-panel">
+            <TextInput
+              value={icon}
+              onChangeText={(value) => setIcon(takeIcon(value))}
+              placeholder="✨"
+              placeholderTextColor={colors.textMuted}
+              selectTextOnFocus
+              accessibilityLabel="آیکون"
+              onFocus={nudgeFocusedField}
+              underlineColorAndroid="transparent"
+              className="w-full font-sans text-xl text-ink"
+              style={{
+                textAlign: "center",
+                textAlignVertical: "center",
+                paddingVertical: 0,
+                paddingHorizontal: 0,
+                margin: 0,
+                includeFontPadding: false,
+              }}
+            />
+          </View>
+        </View>
         <View className="flex-1">
           <Field
             label="نام دسته‌بندی"
@@ -111,23 +138,30 @@ export default function Categories() {
   );
 
   return (
-    <Screen>
-      <ScreenScroll keyboard>
-        <Content className="pt-4">
+    <Screen
+      header={
+        <>
           <ScreenHeader
             title="دسته‌بندی‌ها"
             subtitle="سازمان‌دهی هزینه‌ها و درآمدها"
             onBack={() => router.back()}
           />
-          <SegmentedControl
-            value={type}
-            items={[
-              { value: "expense", label: "هزینه‌ها" },
-              { value: "income", label: "درآمدها" },
-            ]}
-            onChange={setType}
-          />
-          <View className={`mt-5 ${isWide ? "flex-row gap-6" : ""}`}>
+          <View className="mb-4">
+            <SegmentedControl
+              value={type}
+              items={[
+                { value: "expense", label: "هزینه‌ها" },
+                { value: "income", label: "درآمدها" },
+              ]}
+              onChange={setType}
+            />
+          </View>
+        </>
+      }
+    >
+      <ScreenScroll keyboard>
+        <Content>
+          <View className={isWide ? "flex-row gap-6" : ""}>
             <View className={isWide ? "flex-1" : ""}>
               {visible.length ? (
                 visible.map((item) => (
@@ -135,7 +169,7 @@ export default function Categories() {
                     <View className="h-11 w-11 items-center justify-center rounded-2xl bg-accent-soft">
                       <Text className="text-xl">{item.icon}</Text>
                     </View>
-                    <Text className="mr-3 flex-1 font-sans-semibold text-sm text-ink">
+                    <Text className="ms-3 flex-1 font-sans-semibold text-sm text-ink text-left">
                       {item.name}
                     </Text>
                     {!item.is_default ? (

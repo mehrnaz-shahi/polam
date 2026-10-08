@@ -13,7 +13,8 @@ import {
 } from "react-native";
 import { Transfer } from "@/src/db/database";
 import { DoodleIcon, DoodleName } from "@/src/components/icons/DoodleIcon";
-import { persianDate, toman } from "@/src/utils/format";
+import { parseAmount, persianDate, toman } from "@/src/utils/format";
+import { nudgeFocusedField } from "@/src/components/layout/Screen";
 import { usePalette } from "@/src/theme/colors";
 
 export function SurfaceCard({
@@ -87,13 +88,56 @@ export function IconButton({
       accessibilityRole="button"
       accessibilityLabel={label}
       className={`h-11 w-11 items-center justify-center rounded-2xl border ${
-        danger
-          ? "border-error-soft bg-error-soft"
-          : "border-line bg-panel"
+        danger ? "border-error-soft bg-error-soft" : "border-line bg-panel"
       }`}
     >
-      <Ionicons name={icon} size={20} color={danger ? colors.error : colors.textSecondary} />
+      <Ionicons
+        name={icon}
+        size={20}
+        color={danger ? colors.error : colors.textSecondary}
+      />
     </Pressable>
+  );
+}
+
+const inputText = {
+  fontFamily: "Estedad",
+  paddingVertical: 0,
+  paddingHorizontal: 0,
+  margin: 0,
+  textAlign: "right" as const,
+  includeFontPadding: false,
+};
+
+export function Input({
+  className = "",
+  multiline,
+  invalid,
+  style,
+  onFocus,
+  ...props
+}: TextInputProps & { invalid?: boolean }) {
+  const colors = usePalette();
+  return (
+    <View
+      className={`${multiline ? "min-h-14 py-3" : "h-14 justify-center"} rounded-2xl border bg-panel px-4 ${
+        invalid ? "border-error" : "border-line"
+      } ${className}`}
+    >
+      <TextInput
+        multiline={multiline}
+        placeholderTextColor={colors.textMuted}
+        underlineColorAndroid="transparent"
+        textAlignVertical={multiline ? "top" : "center"}
+        {...props}
+        onFocus={(event) => {
+          onFocus?.(event);
+          nudgeFocusedField();
+        }}
+        className="font-sans text-[15px] text-ink"
+        style={[inputText, style]}
+      />
+    </View>
   );
 }
 
@@ -103,19 +147,10 @@ export function Field({
   className = "",
   ...props
 }: { label: string; error?: string } & TextInputProps) {
-  const colors = usePalette();
   return (
-    <View className={`mb-4 ${className}`}>
-      <Text className="mb-2 font-sans-semibold text-sm text-ink">
-        {label}
-      </Text>
-      <TextInput
-        placeholderTextColor={colors.textMuted}
-        {...props}
-        className={`min-h-14 rounded-2xl border bg-panel px-4 text-right font-sans text-[15px] text-ink ${
-          error ? "border-error" : "border-line"
-        } ${props.multiline ? "py-4" : ""}`}
-      />
+    <View className={className || "mb-4"}>
+      <Text className="mb-2 font-sans-semibold text-sm text-ink text-left">{label}</Text>
+      <Input invalid={Boolean(error)} multiline={props.multiline} {...props} />
       {error ? (
         <Text className="mt-1 font-sans text-xs text-error">{error}</Text>
       ) : null}
@@ -134,14 +169,16 @@ export function SearchField({
 }) {
   const colors = usePalette();
   return (
-    <View className="flex-row items-center rounded-2xl border border-line bg-panel px-4">
+    <View className="h-14 flex-row items-center rounded-2xl border border-line bg-panel px-4">
       <Ionicons name="search-outline" size={20} color={colors.textMuted} />
       <TextInput
         value={value}
         onChangeText={onChangeText}
         placeholder={placeholder}
         placeholderTextColor={colors.textMuted}
-        className="mr-2 h-14 flex-1 font-sans text-right text-sm text-ink"
+        underlineColorAndroid="transparent"
+        className="ms-2 flex-1 font-sans text-sm text-ink"
+        style={inputText}
       />
     </View>
   );
@@ -162,9 +199,7 @@ export function FilterChip({
     <Pressable
       onPress={onPress}
       className={`min-h-10 flex-row items-center rounded-full border px-4 ${
-        selected
-          ? "border-brand-600 bg-brand-600"
-          : "border-line bg-panel"
+        selected ? "border-brand-600 bg-brand-600" : "border-line bg-panel"
       }`}
     >
       {icon ? <Text className="ml-1">{icon}</Text> : null}
@@ -212,9 +247,7 @@ export function SegmentedControl<T extends string>({
         >
           <Text
             className={`font-sans-semibold text-sm ${
-              value === item.value
-                ? "text-accent-strong"
-                : "text-muted"
+              value === item.value ? "text-accent-strong" : "text-muted"
             }`}
           >
             {item.label}
@@ -249,7 +282,12 @@ export function EmptyState({
   );
 }
 
-export type SelectItem = { id: string; title: string; icon?: string; meta?: string };
+export type SelectItem = {
+  id: string;
+  title: string;
+  icon?: string;
+  meta?: string;
+};
 
 export function SelectionRow({
   label,
@@ -265,9 +303,7 @@ export function SelectionRow({
   const colors = usePalette();
   return (
     <View className="mb-5">
-      <Text className="mb-2 font-sans-semibold text-sm text-ink">
-        {label}
-      </Text>
+      <Text className="mb-2 font-sans-semibold text-sm text-ink text-left">{label}</Text>
       <ChipRow>
         {items.map((item) => {
           const selected = value === item.id;
@@ -284,17 +320,24 @@ export function SelectionRow({
               <View className="flex-row items-center justify-between">
                 <Text className="text-xl">{item.icon ?? "●"}</Text>
                 {selected ? (
-                  <Ionicons name="checkmark-circle" size={18} color={colors.primary} />
+                  <Ionicons
+                    name="checkmark-circle"
+                    size={18}
+                    color={colors.primary}
+                  />
                 ) : null}
               </View>
               <Text
                 numberOfLines={1}
-                className="mt-3 font-sans-semibold text-sm text-ink"
+                className="mt-3 font-sans-semibold text-sm text-ink text-left"
               >
                 {item.title}
               </Text>
               {item.meta ? (
-                <Text numberOfLines={1} className="mt-1 font-sans text-xs text-muted">
+                <Text
+                  numberOfLines={1}
+                  className="mt-1 font-sans text-xs text-muted text-left"
+                >
                   {item.meta}
                 </Text>
               ) : null}
@@ -318,10 +361,10 @@ export function AmountInput({
   label?: string;
 }) {
   const colors = usePalette();
-  const amount = Number(value.replace(/[٬,\s]/g, ""));
+  const amount = parseAmount(value);
   return (
     <SurfaceCard className="mb-6 border-accent-soft bg-accent-soft">
-      <Text className="font-sans-semibold text-sm text-accent-strong">
+      <Text className="font-sans-semibold text-sm text-accent-strong text-left">
         {label}
       </Text>
       <TextInput
@@ -331,9 +374,23 @@ export function AmountInput({
         onChangeText={onChangeText}
         placeholder="۰"
         placeholderTextColor={colors.textMuted}
-        className="mt-2 text-right font-sans-bold text-4xl text-ink"
+        onFocus={nudgeFocusedField}
+        underlineColorAndroid="transparent"
+        style={{
+          marginTop: 8,
+          color: colors.textPrimary,
+          fontFamily: "Vazirmatn-Bold",
+          fontSize: 36,
+          fontWeight: "400",
+          paddingVertical: 0,
+          marginBottom: 0,
+          includeFontPadding: false,
+          textAlign: "right",
+          textAlignVertical: "center",
+          lineHeight: 54,
+        }}
       />
-      <Text className="mt-2 font-sans text-xs text-muted">
+      <Text className="mt-2 font-sans text-xs text-muted text-left">
         {amount > 0 ? toman(amount * 10) : "مبلغ را وارد کنید"}
       </Text>
     </SurfaceCard>
@@ -354,16 +411,14 @@ export function DateField({
   const colors = usePalette();
   const [visible, setVisible] = useState(false);
   return (
-    <View className="mb-4">
-      <Text className="mb-2 font-sans-semibold text-sm text-ink">
-        {label}
-      </Text>
+    <View className="mb-4 items-start">
+      <Text className="mb-2 font-sans-semibold text-sm text-ink">{label}</Text>
       <Pressable
         onPress={() => setVisible(true)}
         className="min-h-14 flex-row items-center rounded-2xl border border-line bg-panel px-4"
       >
         <Ionicons name="calendar-outline" size={20} color={colors.primary} />
-        <Text className="mr-3 flex-1 font-sans text-sm text-ink">
+        <Text className="ms-3 flex-1 font-sans text-sm text-ink text-left">
           {value ? persianDate(value.toISOString()) : placeholder}
         </Text>
         <Ionicons name="chevron-back" size={17} color={colors.textMuted} />
@@ -400,12 +455,12 @@ export function MenuCard({
       className="flex-row items-center rounded-card border border-line bg-panel p-4 active:opacity-80"
     >
       <DoodleIcon name={icon} size={44} />
-      <View className="mr-4 flex-1">
-        <Text className="font-sans-bold text-base text-ink">
-          {title}
-        </Text>
+      <View className="mr-4 flex-1 items-start">
+        <Text className="font-sans-bold text-base text-ink">{title}</Text>
         {description ? (
-          <Text className="mt-1 font-sans text-xs text-muted">{description}</Text>
+          <Text className="mt-1 font-sans text-xs text-muted">
+            {description}
+          </Text>
         ) : null}
       </View>
       <Ionicons name="chevron-back" size={19} color={colors.textMuted} />
@@ -429,7 +484,7 @@ export function StatCard({
         ? "text-error"
         : "text-ink";
   return (
-    <SurfaceCard className="flex-1">
+    <SurfaceCard className="flex-1 items-start">
       <Text className="font-sans text-xs text-muted">{title}</Text>
       <Text
         numberOfLines={1}
@@ -456,9 +511,9 @@ export function BalanceHero({
   expenseLabel: string;
 }) {
   return (
-    <View className="overflow-hidden rounded-3xl bg-brand-600 p-5">
-      <View className="absolute -left-8 -top-10 h-36 w-36 rounded-full bg-white/10" />
-      <View className="absolute -bottom-12 -right-6 h-28 w-28 rounded-full bg-white/5" />
+    <View className="overflow-hidden rounded-3xl bg-brand-600 p-5 flex-col items-start">
+      <View className="absolute -start-8 -top-10 h-36 w-36 rounded-full bg-white/10" />
+      <View className="absolute -bottom-12 -end-6 h-28 w-28 rounded-full bg-white/5" />
       <Text className="font-sans text-sm text-white/80">موجودی کل</Text>
       <Text
         numberOfLines={1}
@@ -467,9 +522,11 @@ export function BalanceHero({
       >
         {balance}
       </Text>
-      <Text className="mt-1 font-sans text-xs text-white/70">مانده حساب‌های فعال</Text>
+      <Text className="mt-1 font-sans text-xs text-white/70">
+        مانده حساب‌های فعال
+      </Text>
       <View className="mt-7 flex-row gap-3">
-        <View className="flex-1 rounded-2xl bg-white/10 p-3">
+        <View className="flex-1 rounded-2xl bg-white/10 p-3 items-start">
           <Text className="font-sans text-xs text-white/70">{incomeLabel}</Text>
           <Text
             numberOfLines={1}
@@ -479,8 +536,10 @@ export function BalanceHero({
             {income}
           </Text>
         </View>
-        <View className="flex-1 rounded-2xl bg-white/10 p-3">
-          <Text className="font-sans text-xs text-white/70">{expenseLabel}</Text>
+        <View className="flex-1 rounded-2xl bg-white/10 p-3 items-start">
+          <Text className="font-sans text-xs text-white/70">
+            {expenseLabel}
+          </Text>
           <Text
             numberOfLines={1}
             adjustsFontSizeToFit

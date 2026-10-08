@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Alert, Text, View } from "react-native";
 import { useRouter } from "expo-router";
 import { addTransfer, listAccounts, Account } from "@/src/db/database";
-import { toman } from "@/src/utils/format";
+import { parseAmount, toman } from "@/src/utils/format";
 import { Content, Screen, ScreenHeader, ScreenScroll, useResponsive } from "@/src/components/layout/Screen";
 import {
   AmountInput,
@@ -32,7 +32,7 @@ export default function Transfer() {
     });
   }, []);
   const save = async () => {
-    const n = Number(amount.replace(/[٬,\s]/g, ""));
+    const n = parseAmount(amount);
     if (!n) {
       setError("مبلغ را وارد کنید");
       return;
@@ -75,14 +75,17 @@ export default function Transfer() {
   }));
 
   return (
-    <Screen>
+    <Screen
+      header={
+        <ScreenHeader
+          title="انتقال وجه"
+          subtitle="جابجایی امن بین حساب‌های شما"
+          onBack={() => router.back()}
+        />
+      }
+    >
       <ScreenScroll keyboard>
-        <Content className="pt-4">
-          <ScreenHeader
-            title="انتقال وجه"
-            subtitle="جابجایی امن بین حساب‌های شما"
-            onBack={() => router.back()}
-          />
+        <Content>
           <View className={isWide ? "flex-row gap-6" : ""}>
             <View className={isWide ? "w-[38%]" : ""}>
               <AmountInput value={amount} onChangeText={setAmount} />

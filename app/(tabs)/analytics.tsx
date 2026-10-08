@@ -38,21 +38,20 @@ export default function Analytics() {
   const net = data.income - data.expense;
 
   return (
-    <Screen>
+    <Screen header={<ScreenHeader title="تحلیل مالی" subtitle={`خلاصه عملکرد در ${monthName()}`} />}>
       <ScreenScroll
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={refresh} tintColor={colors.primary} />
         }
       >
-        <Content className="pb-36 pt-4">
-          <ScreenHeader title="تحلیل مالی" subtitle={`خلاصه عملکرد در ${monthName()}`} />
+        <Content className="pb-36">
           <View className={isWide ? "flex-row gap-6" : ""}>
             <View className={isWide ? "w-[38%]" : ""}>
               <View className="flex-row gap-3">
                 <StatCard title="درآمد ماه" value={toman(data.income)} tone="positive" />
                 <StatCard title="هزینه ماه" value={toman(data.expense)} tone="negative" />
               </View>
-              <SurfaceCard className="mt-3">
+              <SurfaceCard className="mt-3 items-start">
                 <Text className="font-sans-bold text-base text-ink">
                   خالص جریان نقدی
                 </Text>

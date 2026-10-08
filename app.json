@@ -6,7 +6,21 @@
     "orientation": "default",
     "userInterfaceStyle": "automatic",
     "scheme": "poolaki",
-    "plugins": ["expo-router", "expo-sqlite", "expo-font"],
+    "plugins": [
+      "expo-router",
+      "expo-sqlite",
+      "expo-font",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#F9FAFB",
+          "image": "./assets/splash.png",
+          "resizeMode": "contain",
+          "imageWidth": 280,
+          "dark": { "backgroundColor": "#111827" }
+        }
+      ]
+    ],
     "experiments": { "typedRoutes": true },
     "ios": { "supportsTablet": true },
     "android": { "package": "com.poolaki.offline" },
