@@ -57,10 +57,10 @@ export default function Categories() {
 
   const form = (
     <SurfaceCard>
-      <Text className="font-vazir-bold text-base text-ink dark:text-ink-inverse">
+      <Text className="font-sans-bold text-base text-ink">
         {editing ? "ویرایش دسته‌بندی" : "دسته‌بندی جدید"}
       </Text>
-      <Text className="mb-2 mt-4 font-vazir text-xs text-muted">دسته اصلی (اختیاری)</Text>
+      <Text className="mb-2 mt-4 font-sans text-xs text-muted">دسته اصلی (اختیاری)</Text>
       <ChipRow>
         <FilterChip label="بدون والد" selected={!parent} onPress={() => setParent(null)} />
         {items
@@ -79,7 +79,7 @@ export default function Categories() {
         <TextInput
           value={icon}
           onChangeText={setIcon}
-          className="h-14 w-16 rounded-2xl border border-line bg-panel text-center text-xl dark:border-line-dark dark:bg-panel-dark dark:text-ink-inverse"
+          className="h-14 w-16 rounded-2xl border border-line bg-panel text-center font-sans text-xl text-ink"
         />
         <View className="flex-1">
           <Field
@@ -104,7 +104,7 @@ export default function Categories() {
           }}
           className="mt-3 items-center py-2"
         >
-          <Text className="font-vazir-semibold text-sm text-muted">انصراف</Text>
+          <Text className="font-sans-semibold text-sm text-muted">انصراف</Text>
         </Pressable>
       ) : null}
     </SurfaceCard>
@@ -132,10 +132,10 @@ export default function Categories() {
               {visible.length ? (
                 visible.map((item) => (
                   <SurfaceCard key={item.id} className="mb-3 flex-row items-center p-4">
-                    <View className="h-11 w-11 items-center justify-center rounded-2xl bg-brand-50 dark:bg-brand-900">
+                    <View className="h-11 w-11 items-center justify-center rounded-2xl bg-accent-soft">
                       <Text className="text-xl">{item.icon}</Text>
                     </View>
-                    <Text className="mr-3 flex-1 font-vazir-semibold text-sm text-ink dark:text-ink-inverse">
+                    <Text className="mr-3 flex-1 font-sans-semibold text-sm text-ink">
                       {item.name}
                     </Text>
                     {!item.is_default ? (
@@ -147,14 +147,14 @@ export default function Categories() {
                             setIcon(item.icon);
                           }}
                         >
-                          <Text className="font-vazir-semibold text-xs text-brand-600">ویرایش</Text>
+                          <Text className="font-sans-semibold text-xs text-accent">ویرایش</Text>
                         </Pressable>
                         <Pressable onPress={() => archive(item)}>
-                          <Text className="font-vazir-semibold text-xs text-error">بایگانی</Text>
+                          <Text className="font-sans-semibold text-xs text-error">بایگانی</Text>
                         </Pressable>
                       </View>
                     ) : (
-                      <Text className="font-vazir text-xs text-muted">پیش‌فرض</Text>
+                      <Text className="font-sans text-xs text-muted">پیش‌فرض</Text>
                     )}
                   </SurfaceCard>
                 ))
@@ -162,7 +162,7 @@ export default function Categories() {
                 <EmptyState
                   title="دسته‌ای وجود ندارد"
                   description="یک دسته‌بندی جدید بسازید."
-                  icon="grid-outline"
+                  icon="puzzle"
                 />
               )}
             </View>

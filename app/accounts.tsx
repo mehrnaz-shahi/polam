@@ -1,6 +1,5 @@
 import { useCallback, useState } from "react";
 import { Alert, Pressable, Text, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect, useRouter } from "expo-router";
 import {
   addAccount,
@@ -11,13 +10,12 @@ import {
 } from "@/src/db/database";
 import { toman } from "@/src/utils/format";
 import { Content, Screen, ScreenHeader, ScreenScroll, useResponsive } from "@/src/components/layout/Screen";
+import { DoodleIcon } from "@/src/components/icons/DoodleIcon";
 import { EmptyState, Field, PrimaryButton, SurfaceCard } from "@/src/components/ui";
-import { usePalette } from "@/src/theme/colors";
 
 export default function Accounts() {
   const router = useRouter();
   const { isWide } = useResponsive();
-  const colors = usePalette();
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [name, setName] = useState("");
   const [balance, setBalance] = useState("");
@@ -68,7 +66,7 @@ export default function Accounts() {
 
   const form = (
     <SurfaceCard>
-      <Text className="font-vazir-bold text-base text-ink dark:text-ink-inverse">
+      <Text className="font-sans-bold text-base text-ink">
         {editing ? "ویرایش حساب" : "افزودن حساب"}
       </Text>
       <View className="mt-4">
@@ -96,7 +94,7 @@ export default function Accounts() {
             }}
             className="mt-3 items-center py-2"
           >
-            <Text className="font-vazir-semibold text-sm text-muted">انصراف</Text>
+            <Text className="font-sans-semibold text-sm text-muted">انصراف</Text>
           </Pressable>
         ) : null}
       </View>
@@ -121,21 +119,19 @@ export default function Accounts() {
                     className={`mb-3 ${account.is_archived ? "opacity-50" : ""}`}
                   >
                     <View className="flex-row items-center">
-                      <View className="h-11 w-11 items-center justify-center rounded-2xl bg-brand-50 dark:bg-brand-900">
-                        <Ionicons name="wallet-outline" size={21} color={colors.primary} />
-                      </View>
+                      <DoodleIcon name="wallet" size={40} />
                       <View className="mr-3 flex-1">
-                        <Text className="font-vazir-bold text-base text-ink dark:text-ink-inverse">
+                        <Text className="font-sans-bold text-base text-ink">
                           {account.name}
                         </Text>
-                        <Text className="mt-1 font-vazir text-xs text-muted">
+                        <Text className="mt-1 font-sans text-xs text-muted">
                           {account.is_archived ? "بایگانی‌شده" : "حساب فعال"}
                         </Text>
                       </View>
                       <Text
                         numberOfLines={1}
                         adjustsFontSizeToFit
-                        className="max-w-[40%] font-vazir-bold text-lg text-success"
+                        className="max-w-[40%] font-sans-bold text-lg text-success"
                       >
                         {toman(account.balance)}
                       </Text>
@@ -143,17 +139,17 @@ export default function Accounts() {
                     <View className="mt-4 flex-row gap-2">
                       <Pressable
                         onPress={() => edit(account)}
-                        className="rounded-xl bg-fill px-4 py-2 dark:bg-fill-dark"
+                        className="rounded-xl bg-fill px-4 py-2"
                       >
-                        <Text className="font-vazir-semibold text-xs text-ink dark:text-ink-inverse">
+                        <Text className="font-sans-semibold text-xs text-ink">
                           ویرایش
                         </Text>
                       </Pressable>
                       <Pressable
                         onPress={() => toggleArchive(account)}
-                        className="rounded-xl bg-fill px-4 py-2 dark:bg-fill-dark"
+                        className="rounded-xl bg-fill px-4 py-2"
                       >
-                        <Text className="font-vazir-semibold text-xs text-muted">
+                        <Text className="font-sans-semibold text-xs text-muted">
                           {account.is_archived ? "فعال‌سازی" : "بایگانی"}
                         </Text>
                       </Pressable>
@@ -164,7 +160,7 @@ export default function Accounts() {
                 <EmptyState
                   title="حسابی وجود ندارد"
                   description="یک حساب برای شروع ثبت تراکنش بسازید."
-                  icon="wallet-outline"
+                  icon="wallet"
                 />
               )}
             </View>

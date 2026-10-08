@@ -20,20 +20,20 @@ export function TransactionRow({
       onPress={onPress}
       onLongPress={onLongPress}
       accessibilityRole={onPress ? "button" : undefined}
-      className="mb-3 flex-row items-center rounded-2xl border border-line bg-panel p-4 active:opacity-80 dark:border-line-dark dark:bg-panel-dark"
+      className="mb-3 flex-row items-center rounded-2xl border border-line bg-panel p-4 active:opacity-80"
     >
       <View
         className={`h-12 w-12 items-center justify-center rounded-2xl ${
-          income ? "bg-success-light dark:bg-success-muted" : "bg-error-light dark:bg-error-muted"
+          income ? "bg-success-soft" : "bg-error-soft"
         }`}
       >
         <Text className="text-xl">{item.category_icon}</Text>
       </View>
       <View className="mr-3 flex-1">
-        <Text numberOfLines={1} className="font-vazir-semibold text-[15px] text-ink dark:text-ink-inverse">
+        <Text numberOfLines={1} className="font-sans-semibold text-[15px] text-ink">
           {item.category_name}
         </Text>
-        <Text numberOfLines={1} className="mt-1 font-vazir text-xs text-muted">
+        <Text numberOfLines={1} className="mt-1 font-sans text-xs text-muted">
           {item.note || item.account_name} • {shortDate(item.date)}
         </Text>
       </View>
@@ -41,7 +41,7 @@ export function TransactionRow({
         <Text
           numberOfLines={1}
           adjustsFontSizeToFit
-          className={`font-vazir-bold text-sm ${income ? "text-success" : "text-error"}`}
+          className={`font-sans-bold text-sm ${income ? "text-success" : "text-error"}`}
         >
           {income ? "+" : "−"} {rial(item.amount / 10)} تومان
         </Text>

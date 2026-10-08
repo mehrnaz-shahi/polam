@@ -1,11 +1,12 @@
 import { useCallback, useState } from "react";
 import { RefreshControl, Text, View, Pressable } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { ArrowLeftRight, Minus, Plus, type LucideIcon } from "lucide-react-native";
 import { useFocusEffect, useRouter } from "expo-router";
 import { listTransactions, totals, Transaction } from "@/src/db/database";
 import { toman, monthName } from "@/src/utils/format";
 import { TransactionRow } from "@/src/components/TransactionRow";
 import { Content, Screen, ScreenScroll, useResponsive } from "@/src/components/layout/Screen";
+import { DoodleIcon } from "@/src/components/icons/DoodleIcon";
 import { BalanceHero, EmptyState } from "@/src/components/ui";
 import { usePalette } from "@/src/theme/colors";
 
@@ -44,14 +45,12 @@ export default function Home() {
         <Content className="pb-36 pt-4">
           <View className="mb-6 flex-row items-center">
             <View className="flex-1">
-              <Text className="font-vazir text-sm text-muted">سلام، خوش آمدید</Text>
-              <Text className="mt-1 font-vazir-bold text-2xl text-ink dark:text-ink-inverse">
+              <Text className="font-sans text-sm text-muted">سلام، خوش آمدید</Text>
+              <Text className="mt-1 font-sans-bold text-2xl text-ink">
                 وضعیت مالی شما
               </Text>
             </View>
-            <View className="h-12 w-12 items-center justify-center rounded-2xl bg-brand-100 dark:bg-brand-900">
-              <Ionicons name="wallet-outline" size={24} color={colors.primary} />
-            </View>
+            <DoodleIcon name="wallet" size={52} />
           </View>
           <View className={isWide ? "flex-row gap-6" : ""}>
             <View className={isWide ? "w-[42%]" : ""}>
@@ -63,22 +62,22 @@ export default function Home() {
                 expenseLabel={`هزینه ${monthName()}`}
               />
               <View className="mt-4 flex-row gap-3">
-                <Quick label="هزینه" icon="remove" onPress={() => router.push("/expense")} />
-                <Quick label="درآمد" icon="add" onPress={() => router.push("/income")} />
+                <Quick label="هزینه" icon={Minus} onPress={() => router.push("/expense")} />
+                <Quick label="درآمد" icon={Plus} onPress={() => router.push("/income")} />
                 <Quick
                   label="انتقال"
-                  icon="swap-horizontal"
+                  icon={ArrowLeftRight}
                   onPress={() => router.push("/transfer")}
                 />
               </View>
             </View>
             <View className={isWide ? "flex-1" : "mt-8"}>
               <View className="mb-3 flex-row items-center justify-between">
-                <Text className="font-vazir-bold text-lg text-ink dark:text-ink-inverse">
+                <Text className="font-sans-bold text-lg text-ink">
                   تراکنش‌های اخیر
                 </Text>
                 <Pressable onPress={() => router.push("/transactions")}>
-                  <Text className="font-vazir-semibold text-sm text-brand-600">مشاهده همه</Text>
+                  <Text className="font-sans-semibold text-sm text-accent">مشاهده همه</Text>
                 </Pressable>
               </View>
               {items.length ? (
@@ -93,6 +92,7 @@ export default function Home() {
                 <EmptyState
                   title="هنوز تراکنشی ثبت نشده"
                   description="اولین درآمد یا هزینه خود را ثبت کنید."
+                  icon="piggy"
                 />
               )}
             </View>
@@ -105,21 +105,21 @@ export default function Home() {
 
 function Quick({
   label,
-  icon,
+  icon: Icon,
   onPress,
 }: {
   label: string;
-  icon: keyof typeof Ionicons.glyphMap;
+  icon: LucideIcon;
   onPress: () => void;
 }) {
   const colors = usePalette();
   return (
     <Pressable
       onPress={onPress}
-      className="flex-1 items-center rounded-2xl border border-line bg-panel p-4 active:opacity-70 dark:border-line-dark dark:bg-panel-dark"
+      className="flex-1 items-center rounded-2xl border border-line bg-panel p-4 active:opacity-70"
     >
-      <Ionicons name={icon} size={22} color={colors.primary} />
-      <Text className="mt-2 font-vazir-semibold text-xs text-ink dark:text-ink-inverse">
+      <Icon size={20} color={colors.primary} strokeWidth={1.75} />
+      <Text className="mt-2 font-sans-semibold text-xs text-ink">
         {label}
       </Text>
     </Pressable>

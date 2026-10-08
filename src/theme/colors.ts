@@ -1,9 +1,9 @@
-import { useColorScheme } from "nativewind";
+import { useAppStore } from "@/src/stores/app";
 
 export const palette = {
-  primary: "#4F46E5",
-  primaryLight: "#6366F1",
-  primaryDark: "#3730A3",
+  primary: "#4B8D88",
+  primaryLight: "#82C4C0",
+  primaryDark: "#376F6B",
   success: "#10B981",
   successLight: "#D1FAE5",
   successDark: "#047857",
@@ -23,9 +23,9 @@ export const palette = {
 } as const;
 
 export const darkPalette = {
-  primary: "#6366F1",
-  primaryLight: "#818CF8",
-  primaryDark: "#4F46E5",
+  primary: "#ACD9D5",
+  primaryLight: "#C5E5E2",
+  primaryDark: "#82C4C0",
   success: "#10B981",
   successLight: "#064E3B",
   successDark: "#6EE7B7",
@@ -47,6 +47,6 @@ export const darkPalette = {
 export type AppPalette = { [K in keyof typeof palette]: string };
 
 export function usePalette(): AppPalette {
-  const { colorScheme } = useColorScheme();
-  return colorScheme === "dark" ? darkPalette : palette;
+  const scheme = useAppStore((state) => state.scheme);
+  return scheme === "dark" ? darkPalette : palette;
 }

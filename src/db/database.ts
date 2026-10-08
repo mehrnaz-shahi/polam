@@ -30,7 +30,7 @@ async function migrate(d:SQLite.SQLiteDatabase){
   let version=row?.version??0;
   if(version<1){
     await d.execAsync(`
-      CREATE TABLE IF NOT EXISTS accounts(id TEXT PRIMARY KEY NOT NULL,name TEXT NOT NULL,type TEXT NOT NULL,balance INTEGER NOT NULL DEFAULT 0,currency TEXT NOT NULL DEFAULT 'IRR',icon TEXT NOT NULL DEFAULT 'wallet-outline',color TEXT NOT NULL DEFAULT '#4F46E5',is_archived INTEGER NOT NULL DEFAULT 0,created_at TEXT NOT NULL,updated_at TEXT NOT NULL);
+      CREATE TABLE IF NOT EXISTS accounts(id TEXT PRIMARY KEY NOT NULL,name TEXT NOT NULL,type TEXT NOT NULL,balance INTEGER NOT NULL DEFAULT 0,currency TEXT NOT NULL DEFAULT 'IRR',icon TEXT NOT NULL DEFAULT 'wallet-outline',color TEXT NOT NULL DEFAULT '#4B8D88',is_archived INTEGER NOT NULL DEFAULT 0,created_at TEXT NOT NULL,updated_at TEXT NOT NULL);
       CREATE TABLE IF NOT EXISTS categories(id TEXT PRIMARY KEY NOT NULL,name TEXT NOT NULL,type TEXT NOT NULL CHECK(type IN ('expense','income')),icon TEXT NOT NULL,color TEXT NOT NULL,parent_id TEXT,sort_order INTEGER NOT NULL DEFAULT 0,is_default INTEGER NOT NULL DEFAULT 1,is_archived INTEGER NOT NULL DEFAULT 0,FOREIGN KEY(parent_id) REFERENCES categories(id) ON DELETE SET NULL);
       CREATE TABLE IF NOT EXISTS transactions(id TEXT PRIMARY KEY NOT NULL,type TEXT NOT NULL CHECK(type IN ('expense','income')),amount INTEGER NOT NULL CHECK(amount>0),account_id TEXT NOT NULL,category_id TEXT NOT NULL,date TEXT NOT NULL,note TEXT NOT NULL DEFAULT '',created_at TEXT NOT NULL,updated_at TEXT NOT NULL,FOREIGN KEY(account_id) REFERENCES accounts(id));
       CREATE TABLE IF NOT EXISTS transfers(id TEXT PRIMARY KEY NOT NULL,source_account_id TEXT NOT NULL,destination_account_id TEXT NOT NULL,amount INTEGER NOT NULL CHECK(amount>0),date TEXT NOT NULL,note TEXT NOT NULL DEFAULT '',created_at TEXT NOT NULL,updated_at TEXT NOT NULL,FOREIGN KEY(source_account_id) REFERENCES accounts(id),FOREIGN KEY(destination_account_id) REFERENCES accounts(id));
@@ -48,31 +48,37 @@ async function migrate(d:SQLite.SQLiteDatabase){
     const cols=await d.getAllAsync<{name:string}>('PRAGMA table_info(categories)');
     if(!cols.some(c=>c.name==='is_archived')) await d.execAsync('ALTER TABLE categories ADD COLUMN is_archived INTEGER NOT NULL DEFAULT 0');
     await d.runAsync('INSERT OR IGNORE INTO schema_migrations(version) VALUES(2)');
+    version=2;
+  }
+  if(version<3){
+    await d.runAsync("UPDATE accounts SET color='#4B8D88' WHERE lower(color) IN ('#4f46e5','#7c5cff','#6848e8','#6366f1','#818cf8','#3730a3')");
+    await d.runAsync("UPDATE categories SET color='#4B8D88' WHERE lower(color) IN ('#4f46e5','#7c5cff','#6848e8','#6366f1','#818cf8','#3730a3')");
+    await d.runAsync('INSERT OR IGNORE INTO schema_migrations(version) VALUES(3)');
   }
   await seed(d);
 }
 
 async function seed(d:SQLite.SQLiteDatabase){
   const a=await d.getFirstAsync<{count:number}>('SELECT COUNT(*) count FROM accounts');
-  if((a?.count??0)===0){const t=now();await d.runAsync('INSERT INTO accounts VALUES (?,?,?,?,?,?,?,?,?,?)',id(),'کیف پول','cash',0,'IRR','wallet-outline','#4F46E5',0,t,t)}
+  if((a?.count??0)===0){const t=now();await d.runAsync('INSERT INTO accounts VALUES (?,?,?,?,?,?,?,?,?,?)',id(),'کیف پول','cash',0,'IRR','wallet-outline','#4B8D88',0,t,t)}
   const c=await d.getFirstAsync<{count:number}>('SELECT COUNT(*) count FROM categories');
   if((c?.count??0)===0){
     const ex=[['غذا','🍔'],['حمل‌ونقل','🚗'],['خرید','🛍️'],['قبوض','💡'],['سرگرمی','🎬'],['سلامت','❤️'],['آموزش','📚'],['خانه','🏠'],['سفر','✈️']];
     const inc=[['حقوق','💰'],['فریلنسری','💻'],['هدیه','🎁'],['سرمایه‌گذاری','📈'],['سایر درآمدها','✨']];
-    for(let i=0;i<ex.length;i++) await d.runAsync('INSERT INTO categories VALUES (?,?,?,?,?,?,?,?,?)',id(),ex[i][0],'expense',ex[i][1],'#4F46E5',null,i,1,0);
-    for(let i=0;i<inc.length;i++) await d.runAsync('INSERT INTO categories VALUES (?,?,?,?,?,?,?,?,?)',id(),inc[i][0],'income',inc[i][1],'#4F46E5',null,i,1,0);
+    for(let i=0;i<ex.length;i++) await d.runAsync('INSERT INTO categories VALUES (?,?,?,?,?,?,?,?,?)',id(),ex[i][0],'expense',ex[i][1],'#4B8D88',null,i,1,0);
+    for(let i=0;i<inc.length;i++) await d.runAsync('INSERT INTO categories VALUES (?,?,?,?,?,?,?,?,?)',id(),inc[i][0],'income',inc[i][1],'#4B8D88',null,i,1,0);
   }
   await d.runAsync("INSERT OR IGNORE INTO settings(id,theme,calendar) VALUES(1,'system','persian')");
 }
 
 export async function listAccounts(includeArchived=false){const d=await getDb();return d.getAllAsync<Account>(`SELECT * FROM accounts ${includeArchived?'':'WHERE is_archived=0'} ORDER BY is_archived,created_at`)}
 export async function getAccount(id:string){const d=await getDb();return d.getFirstAsync<Account>('SELECT * FROM accounts WHERE id=?',id)}
-export async function addAccount(input:{name:string;type:string;balance:number;icon?:string;color?:string}){const d=await getDb();const t=now();return d.runAsync('INSERT INTO accounts VALUES (?,?,?,?,?,?,?,?,?,?)',id(),input.name,input.type,input.balance,'IRR',input.icon??'wallet-outline',input.color??'#4F46E5',0,t,t)}
+export async function addAccount(input:{name:string;type:string;balance:number;icon?:string;color?:string}){const d=await getDb();const t=now();return d.runAsync('INSERT INTO accounts VALUES (?,?,?,?,?,?,?,?,?,?)',id(),input.name,input.type,input.balance,'IRR',input.icon??'wallet-outline',input.color??'#4B8D88',0,t,t)}
 export async function updateAccount(id:string,input:{name:string;type?:string;icon?:string;color?:string}){const d=await getDb();return d.runAsync('UPDATE accounts SET name=?,type=COALESCE(?,type),icon=COALESCE(?,icon),color=COALESCE(?,color),updated_at=? WHERE id=?',input.name,input.type??null,input.icon??null,input.color??null,now(),id)}
 export async function setAccountArchived(id:string,archived:boolean){const d=await getDb();return d.runAsync('UPDATE accounts SET is_archived=?,updated_at=? WHERE id=?',archived?1:0,now(),id)}
 
 export async function listCategories(type?:'expense'|'income',includeArchived=false){const d=await getDb();return d.getAllAsync<Category>(`SELECT * FROM categories ${type?'WHERE type=? AND is_archived=0':'WHERE is_archived=0'} ORDER BY type,sort_order`,...(type?[type]:[]))}
-export async function addCategory(input:{name:string;type:'expense'|'income';icon:string;parentId?:string|null}){const d=await getDb();const max=await d.getFirstAsync<{n:number}>('SELECT COALESCE(MAX(sort_order),-1)+1 n FROM categories WHERE type=?',input.type);return d.runAsync('INSERT INTO categories VALUES (?,?,?,?,?,?,?,?,?)',id(),input.name,input.type,input.icon,'#4F46E5',input.parentId??null,max?.n??0,0,0)}
+export async function addCategory(input:{name:string;type:'expense'|'income';icon:string;parentId?:string|null}){const d=await getDb();const max=await d.getFirstAsync<{n:number}>('SELECT COALESCE(MAX(sort_order),-1)+1 n FROM categories WHERE type=?',input.type);return d.runAsync('INSERT INTO categories VALUES (?,?,?,?,?,?,?,?,?)',id(),input.name,input.type,input.icon,'#4B8D88',input.parentId??null,max?.n??0,0,0)}
 export async function updateCategory(id:string,name:string,icon:string){const d=await getDb();return d.runAsync('UPDATE categories SET name=?,icon=? WHERE id=?',name,icon,id)}
 export async function archiveCategory(id:string){const d=await getDb();return d.runAsync('UPDATE categories SET is_archived=1 WHERE id=?',id)}
 

@@ -16,7 +16,7 @@ export default function More() {
               <MenuCard
                 title="حساب‌ها"
                 description="موجودی‌ها و کیف پول‌ها"
-                icon="wallet-outline"
+                icon="wallet"
                 onPress={() => router.push("/accounts")}
               />
             </View>
@@ -24,7 +24,7 @@ export default function More() {
               <MenuCard
                 title="دسته‌بندی‌ها"
                 description="مدیریت هزینه و درآمد"
-                icon="grid-outline"
+                icon="cash"
                 onPress={() => router.push("/categories")}
               />
             </View>
@@ -32,7 +32,7 @@ export default function More() {
               <MenuCard
                 title="تنظیمات"
                 description="ظاهر و اطلاعات برنامه"
-                icon="settings-outline"
+                icon="puzzle"
                 onPress={() => router.push("/settings")}
               />
             </View>

@@ -51,7 +51,7 @@ export function Screen({
   return (
     <SafeAreaView
       edges={["top", "left", "right"]}
-      className={`flex-1 bg-surface dark:bg-surface-dark ${className}`}
+      className={`flex-1 bg-surface ${className}`}
     >
       {children}
     </SafeAreaView>
@@ -110,17 +110,17 @@ export function ScreenHeader({
           onPress={onBack}
           accessibilityRole="button"
           accessibilityLabel="بازگشت"
-          className="h-11 w-11 items-center justify-center rounded-2xl border border-line bg-panel active:opacity-70 dark:border-line-dark dark:bg-panel-dark"
+          className="h-11 w-11 items-center justify-center rounded-2xl border border-line bg-panel active:opacity-70"
         >
           <Ionicons name="arrow-forward" size={21} color={colors.textSecondary} />
         </Pressable>
       ) : null}
       <View className={onBack ? "mr-4 flex-1" : "flex-1"}>
-        <Text className="font-vazir-bold text-2xl text-ink dark:text-ink-inverse">
+        <Text className="font-sans-bold text-2xl text-ink">
           {title}
         </Text>
         {subtitle ? (
-          <Text className="mt-1 font-vazir text-sm text-muted">{subtitle}</Text>
+          <Text className="mt-1 font-sans text-sm text-muted">{subtitle}</Text>
         ) : null}
       </View>
       {trailing ?? (onBack ? <View className="w-11" /> : null)}

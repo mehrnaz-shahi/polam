@@ -12,23 +12,27 @@ module.exports = {
     extend: {
       colors: {
         brand: {
-          50: "#F4F1FF",
-          100: "#E9E3FF",
-          200: "#D6CCFF",
-          300: "#C0B2FF",
-          400: "#AA98FF",
-          500: "#8B72FF",
-          600: "#7C5CFF",
-          700: "#6848E8",
-          800: "#5639C7",
-          900: "#422C9E",
+          50: "#F0F9F8",
+          100: "#DDF1EF",
+          200: "#C5E5E2",
+          300: "#ACD9D5",
+          400: "#94CEC9",
+          500: "#82C4C0",
+          600: "#62AAA5",
+          700: "#4B8D88",
+          800: "#376F6B",
+          900: "#285450",
+        },
+
+        accent: {
+          DEFAULT: "var(--color-accent)",
+          strong: "var(--color-accent-strong)",
+          soft: "var(--color-accent-soft)",
         },
 
         success: {
           DEFAULT: "#10B981",
-          light: "#D1FAE5",
-          dark: "#047857",
-          muted: "#064E3B",
+          soft: "var(--color-success-soft)",
         },
 
         warning: {
@@ -37,52 +41,29 @@ module.exports = {
         },
 
         error: {
-          DEFAULT: "#EF4444",
-          light: "#FEE2E2",
-          muted: "#3F1D1D",
+          DEFAULT: "var(--color-error)",
+          soft: "var(--color-error-soft)",
         },
 
         danger: "#EF4444",
-
-        ink: {
-          DEFAULT: "#111827",
-          inverse: "#F9FAFB",
-        },
-
-        muted: {
-          DEFAULT: "#6B7280",
-          inverse: "#9CA3AF",
-        },
-
-        faint: "#9CA3AF",
-
-        surface: {
-          DEFAULT: "#F9FAFB",
-          dark: "#111827",
-        },
-
-        panel: {
-          DEFAULT: "#FFFFFF",
-          dark: "#1F2937",
-        },
-
-        fill: {
-          DEFAULT: "#F3F4F6",
-          dark: "#0F172A",
-        },
+        ink: "var(--color-ink)",
+        muted: "var(--color-muted)",
+        faint: "var(--color-faint)",
+        surface: "var(--color-surface)",
+        panel: "var(--color-panel)",
+        fill: "var(--color-fill)",
 
         line: {
-          DEFAULT: "#E5E7EB",
-          dark: "#374151",
-          strong: "#D1D5DB",
+          DEFAULT: "var(--color-line)",
+          strong: "var(--color-line-strong)",
         },
       },
 
       fontFamily: {
-        vazir: ["Vazirmatn"],
-        "vazir-medium": ["VazirmatnMedium"],
-        "vazir-semibold": ["VazirmatnSemiBold"],
-        "vazir-bold": ["VazirmatnBold"],
+        sans: ["Estedad"],
+        "sans-medium": ["EstedadMedium"],
+        "sans-semibold": ["EstedadSemiBold"],
+        "sans-bold": ["EstedadBold"],
       },
 
       borderRadius: {

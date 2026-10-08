@@ -1,5 +1,5 @@
 import { Pressable, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { ChartPie, House, LayoutGrid, Plus, Receipt, type LucideIcon } from "lucide-react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { usePalette } from "@/src/theme/colors";
 
@@ -16,11 +16,18 @@ type FloatingTabBarProps = {
   };
 };
 
-const ICONS: Record<string, keyof typeof Ionicons.glyphMap> = {
-  index: "leaf-outline",
-  transactions: "reader-outline",
-  analytics: "bookmark-outline",
-  more: "construct-outline",
+const ICONS: Record<string, LucideIcon> = {
+  index: House,
+  transactions: Receipt,
+  analytics: ChartPie,
+  more: LayoutGrid,
+};
+
+const LABELS: Record<string, string> = {
+  index: "خانه",
+  transactions: "تراکنش‌ها",
+  analytics: "تحلیل",
+  more: "بیشتر",
 };
 
 export const TAB_BAR_CLEARANCE = 128;
@@ -45,18 +52,20 @@ export function FloatingTabBar({ state, navigation }: FloatingTabBarProps) {
   const renderTab = (route: (typeof state.routes)[number]) => {
     const index = state.routes.findIndex((item) => item.key === route.key);
     const focused = state.index === index;
+    const Icon = ICONS[route.name] ?? House;
     return (
       <Pressable
         key={route.key}
         accessibilityRole="button"
+        accessibilityLabel={LABELS[route.name] ?? route.name}
         accessibilityState={focused ? { selected: true } : {}}
         onPress={() => open(route.name, route.key, focused)}
         className="h-16 flex-1 items-center justify-center"
       >
-        <Ionicons
-          name={ICONS[route.name] ?? "ellipse-outline"}
+        <Icon
           size={22}
           color={focused ? colors.primary : colors.textMuted}
+          strokeWidth={1.75}
         />
         <View
           className="mt-1.5 h-1 w-1 rounded-full"
@@ -80,7 +89,7 @@ export function FloatingTabBar({ state, navigation }: FloatingTabBarProps) {
       }}
     >
       <View
-        className="h-[68px] flex-row items-center rounded-full border border-line bg-panel dark:border-line-dark dark:bg-panel-dark"
+        className="h-[68px] flex-row items-center rounded-full border border-line bg-panel"
         style={{
           shadowColor: colors.textPrimary,
           shadowOpacity: 0.08,
@@ -95,7 +104,7 @@ export function FloatingTabBar({ state, navigation }: FloatingTabBarProps) {
       </View>
       <View
         pointerEvents="none"
-        className="absolute bg-surface dark:bg-surface-dark"
+        className="absolute bg-surface"
         style={{
           top: -4,
           left: "50%",
@@ -124,7 +133,7 @@ export function FloatingTabBar({ state, navigation }: FloatingTabBarProps) {
             elevation: 10,
           }}
         >
-          <Ionicons name="leaf" size={26} color={colors.onPrimary} />
+          <Plus size={26} color={colors.onPrimary} strokeWidth={2.25} />
         </Pressable>
       ) : null}
     </View>

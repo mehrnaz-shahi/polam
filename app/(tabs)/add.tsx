@@ -16,8 +16,7 @@ export default function Add() {
               <MenuCard
                 title="ثبت هزینه"
                 description="خریدها و پرداخت‌های روزانه"
-                icon="arrow-up-circle-outline"
-                accent="rose"
+                icon="banknote"
                 onPress={() => router.push("/expense")}
               />
             </View>
@@ -25,7 +24,7 @@ export default function Add() {
               <MenuCard
                 title="ثبت درآمد"
                 description="حقوق، فروش و سایر دریافتی‌ها"
-                icon="arrow-down-circle-outline"
+                icon="bag"
                 onPress={() => router.push("/income")}
               />
             </View>
@@ -33,8 +32,7 @@ export default function Add() {
               <MenuCard
                 title="انتقال بین حساب‌ها"
                 description="جابجایی موجودی بدون هزینه"
-                icon="swap-horizontal-outline"
-                accent="blue"
+                icon="handshake"
                 onPress={() => router.push("/transfer")}
               />
             </View>

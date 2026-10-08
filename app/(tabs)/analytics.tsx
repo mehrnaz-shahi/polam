@@ -53,19 +53,19 @@ export default function Analytics() {
                 <StatCard title="هزینه ماه" value={toman(data.expense)} tone="negative" />
               </View>
               <SurfaceCard className="mt-3">
-                <Text className="font-vazir-bold text-base text-ink dark:text-ink-inverse">
+                <Text className="font-sans-bold text-base text-ink">
                   خالص جریان نقدی
                 </Text>
                 <Text
                   numberOfLines={1}
                   adjustsFontSizeToFit
-                  className={`mt-2 font-vazir-bold text-2xl ${
+                  className={`mt-2 font-sans-bold text-2xl ${
                     net >= 0 ? "text-success" : "text-error"
                   }`}
                 >
                   {net >= 0 ? "+" : "−"} {toman(Math.abs(net))}
                 </Text>
-                <Text className="mt-2 font-vazir text-xs text-muted">
+                <Text className="mt-2 font-sans text-xs text-muted">
                   موجودی کل: {toman(data.balance)}
                 </Text>
               </SurfaceCard>
@@ -73,24 +73,24 @@ export default function Analytics() {
             <View className={isWide ? "flex-1" : "mt-6"}>
               {cats.length ? (
                 <SurfaceCard>
-                  <Text className="font-vazir-bold text-base text-ink dark:text-ink-inverse">
+                  <Text className="font-sans-bold text-base text-ink">
                     هزینه بر اساس دسته‌بندی
                   </Text>
                   {cats.slice(0, 8).map((c) => (
                     <View key={c.category_name} className="mt-5">
                       <View className="flex-row items-center">
                         <Text className="text-lg">{c.category_icon}</Text>
-                        <Text className="mr-2 flex-1 font-vazir text-sm text-ink dark:text-ink-inverse">
+                        <Text className="mr-2 flex-1 font-sans text-sm text-ink">
                           {c.category_name}
                         </Text>
                         <Text
                           numberOfLines={1}
-                          className="max-w-[40%] font-vazir-bold text-xs text-ink dark:text-ink-inverse"
+                          className="max-w-[40%] font-sans-bold text-xs text-ink"
                         >
                           {toman(c.amount)}
                         </Text>
                       </View>
-                      <View className="mt-2 h-2 overflow-hidden rounded-full bg-fill dark:bg-fill-dark">
+                      <View className="mt-2 h-2 overflow-hidden rounded-full bg-fill">
                         <View
                           className="h-full rounded-full bg-brand-500"
                           style={{ width: `${Math.max(8, (c.amount / max) * 100)}%` }}
@@ -103,7 +103,7 @@ export default function Analytics() {
                 <EmptyState
                   title="داده‌ای برای نمایش نیست"
                   description="پس از ثبت هزینه، نمودار اینجا نمایش داده می‌شود."
-                  icon="pie-chart-outline"
+                  icon="pie"
                 />
               )}
             </View>

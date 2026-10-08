@@ -136,7 +136,7 @@ export function TransactionForm({
         multiline
       />
       {error ? (
-        <Text className="mb-3 font-vazir text-sm text-error">{error}</Text>
+        <Text className="mb-3 font-sans text-sm text-error">{error}</Text>
       ) : null}
       <PrimaryButton
         title={transaction ? "ذخیره تغییرات" : type === "expense" ? "ثبت هزینه" : "ثبت درآمد"}
@@ -175,10 +175,10 @@ export function TransactionForm({
               />
               {isWide ? (
                 <SurfaceCard>
-                  <Text className="font-vazir-bold text-base text-ink dark:text-ink-inverse">
+                  <Text className="font-sans-bold text-base text-ink">
                     ثبت دقیق، تصمیم بهتر
                   </Text>
-                  <Text className="mt-2 font-vazir text-sm leading-7 text-muted">
+                  <Text className="mt-2 font-sans text-sm leading-7 text-muted">
                     دسته‌بندی و حساب درست، گزارش‌های ماهانه شما را دقیق‌تر می‌کند.
                   </Text>
                 </SurfaceCard>

@@ -144,7 +144,7 @@ export default function Transactions() {
           }}
           className="mt-2 items-center py-2"
         >
-          <Text className="font-vazir-semibold text-xs text-muted">پاک کردن فیلترها</Text>
+          <Text className="font-sans-semibold text-xs text-muted">پاک کردن فیلترها</Text>
         </Pressable>
       ) : null}
     </SurfaceCard>
@@ -162,8 +162,8 @@ export default function Transactions() {
                 onPress={() => setShowFilters((value) => !value)}
                 className={`h-11 w-11 items-center justify-center rounded-2xl border ${
                   showFilters || activeFilters
-                    ? "border-brand-500 bg-brand-50 dark:bg-brand-900"
-                    : "border-line bg-panel dark:border-line-dark dark:bg-panel-dark"
+                    ? "border-brand-500 bg-accent-soft"
+                    : "border-line bg-panel"
                 }`}
               >
                 <Ionicons name="options-outline" size={21} color={colors.primary} />
@@ -198,12 +198,13 @@ export default function Transactions() {
                 <EmptyState
                   title="تراکنشی پیدا نشد"
                   description="فیلترها یا عبارت جستجو را تغییر دهید."
+                  icon="clipboard"
                 />
               }
               ListFooterComponent={
                 transfers.length > 0 ? (
                   <SurfaceCard className="mt-3">
-                    <Text className="font-vazir-bold text-base text-ink dark:text-ink-inverse">
+                    <Text className="font-sans-bold text-base text-ink">
                       انتقال‌های اخیر
                     </Text>
                     {transfers.slice(0, 5).map((t) => (
