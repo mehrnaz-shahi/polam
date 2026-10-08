@@ -15,6 +15,8 @@ import {
 } from "@/src/db/database";
 import { TransactionRow } from "@/src/components/TransactionRow";
 import { Content, Screen, ScreenHeader, useResponsive } from "@/src/components/layout/Screen";
+import { usePalette } from "@/src/theme/colors";
+import { TAB_BAR_CLEARANCE } from "@/src/components/layout/FloatingTabBar";
 import {
   ChipRow,
   DateField,
@@ -28,6 +30,7 @@ import {
 export default function Transactions() {
   const router = useRouter();
   const { isWide } = useResponsive();
+  const colors = usePalette();
   const [q, setQ] = useState("");
   const [items, setItems] = useState<Transaction[]>([]);
   const [accounts, setAccounts] = useState<Account[]>([]);
@@ -163,7 +166,7 @@ export default function Transactions() {
                     : "border-line bg-panel dark:border-line-dark dark:bg-panel-dark"
                 }`}
               >
-                <Ionicons name="options-outline" size={21} color="#059669" />
+                <Ionicons name="options-outline" size={21} color={colors.primary} />
               </Pressable>
             )
           }
@@ -183,7 +186,7 @@ export default function Transactions() {
               showsVerticalScrollIndicator={false}
               refreshing={refreshing}
               onRefresh={refresh}
-              contentContainerStyle={{ paddingBottom: 30, flexGrow: 1 }}
+              contentContainerStyle={{ paddingBottom: TAB_BAR_CLEARANCE, flexGrow: 1 }}
               renderItem={({ item }) => (
                 <TransactionRow
                   item={item}

@@ -136,7 +136,7 @@ export function TransactionForm({
         multiline
       />
       {error ? (
-        <Text className="mb-3 font-vazir text-sm text-rose-500">{error}</Text>
+        <Text className="mb-3 font-vazir text-sm text-error">{error}</Text>
       ) : null}
       <PrimaryButton
         title={transaction ? "ذخیره تغییرات" : type === "expense" ? "ثبت هزینه" : "ثبت درآمد"}

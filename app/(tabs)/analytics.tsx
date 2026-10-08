@@ -5,9 +5,11 @@ import { categoryTotals, totals } from "@/src/db/database";
 import { toman, monthName } from "@/src/utils/format";
 import { Content, Screen, ScreenHeader, ScreenScroll, useResponsive } from "@/src/components/layout/Screen";
 import { EmptyState, StatCard, SurfaceCard } from "@/src/components/ui";
+import { usePalette } from "@/src/theme/colors";
 
 export default function Analytics() {
   const { isWide } = useResponsive();
+  const colors = usePalette();
   const [data, setData] = useState({ balance: 0, income: 0, expense: 0 });
   const [cats, setCats] = useState<
     { category_name: string; category_icon: string; amount: number }[]
@@ -39,10 +41,10 @@ export default function Analytics() {
     <Screen>
       <ScreenScroll
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={refresh} tintColor="#059669" />
+          <RefreshControl refreshing={refreshing} onRefresh={refresh} tintColor={colors.primary} />
         }
       >
-        <Content className="pt-4">
+        <Content className="pb-36 pt-4">
           <ScreenHeader title="تحلیل مالی" subtitle={`خلاصه عملکرد در ${monthName()}`} />
           <View className={isWide ? "flex-row gap-6" : ""}>
             <View className={isWide ? "w-[38%]" : ""}>
@@ -58,7 +60,7 @@ export default function Analytics() {
                   numberOfLines={1}
                   adjustsFontSizeToFit
                   className={`mt-2 font-vazir-bold text-2xl ${
-                    net >= 0 ? "text-brand-600" : "text-rose-500"
+                    net >= 0 ? "text-success" : "text-error"
                   }`}
                 >
                   {net >= 0 ? "+" : "−"} {toman(Math.abs(net))}
@@ -88,7 +90,7 @@ export default function Analytics() {
                           {toman(c.amount)}
                         </Text>
                       </View>
-                      <View className="mt-2 h-2 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
+                      <View className="mt-2 h-2 overflow-hidden rounded-full bg-fill dark:bg-fill-dark">
                         <View
                           className="h-full rounded-full bg-brand-500"
                           style={{ width: `${Math.max(8, (c.amount / max) * 100)}%` }}

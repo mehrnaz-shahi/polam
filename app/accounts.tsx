@@ -12,10 +12,12 @@ import {
 import { toman } from "@/src/utils/format";
 import { Content, Screen, ScreenHeader, ScreenScroll, useResponsive } from "@/src/components/layout/Screen";
 import { EmptyState, Field, PrimaryButton, SurfaceCard } from "@/src/components/ui";
+import { usePalette } from "@/src/theme/colors";
 
 export default function Accounts() {
   const router = useRouter();
   const { isWide } = useResponsive();
+  const colors = usePalette();
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [name, setName] = useState("");
   const [balance, setBalance] = useState("");
@@ -120,7 +122,7 @@ export default function Accounts() {
                   >
                     <View className="flex-row items-center">
                       <View className="h-11 w-11 items-center justify-center rounded-2xl bg-brand-50 dark:bg-brand-900">
-                        <Ionicons name="wallet-outline" size={21} color="#059669" />
+                        <Ionicons name="wallet-outline" size={21} color={colors.primary} />
                       </View>
                       <View className="mr-3 flex-1">
                         <Text className="font-vazir-bold text-base text-ink dark:text-ink-inverse">
@@ -133,7 +135,7 @@ export default function Accounts() {
                       <Text
                         numberOfLines={1}
                         adjustsFontSizeToFit
-                        className="max-w-[40%] font-vazir-bold text-lg text-brand-600"
+                        className="max-w-[40%] font-vazir-bold text-lg text-success"
                       >
                         {toman(account.balance)}
                       </Text>
@@ -141,7 +143,7 @@ export default function Accounts() {
                     <View className="mt-4 flex-row gap-2">
                       <Pressable
                         onPress={() => edit(account)}
-                        className="rounded-xl bg-slate-100 px-4 py-2 dark:bg-slate-800"
+                        className="rounded-xl bg-fill px-4 py-2 dark:bg-fill-dark"
                       >
                         <Text className="font-vazir-semibold text-xs text-ink dark:text-ink-inverse">
                           ویرایش
@@ -149,7 +151,7 @@ export default function Accounts() {
                       </Pressable>
                       <Pressable
                         onPress={() => toggleArchive(account)}
-                        className="rounded-xl bg-slate-100 px-4 py-2 dark:bg-slate-800"
+                        className="rounded-xl bg-fill px-4 py-2 dark:bg-fill-dark"
                       >
                         <Text className="font-vazir-semibold text-xs text-muted">
                           {account.is_archived ? "فعال‌سازی" : "بایگانی"}

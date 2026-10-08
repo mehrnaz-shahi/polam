@@ -9,11 +9,13 @@ import {
 } from "@/src/db/database";
 import { TransactionForm } from "@/src/components/finance/TransactionForm";
 import { Screen } from "@/src/components/layout/Screen";
+import { usePalette } from "@/src/theme/colors";
 
 export default function TransactionDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const [transaction, setTransaction] = useState<Transaction | null>(null);
+  const colors = usePalette();
 
   useEffect(() => {
     if (!id) return;
@@ -23,7 +25,7 @@ export default function TransactionDetail() {
   if (!transaction) {
     return (
       <Screen className="items-center justify-center">
-        <ActivityIndicator color="#059669" />
+        <ActivityIndicator color={colors.primary} />
       </Screen>
     );
   }

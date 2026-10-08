@@ -150,7 +150,7 @@ export default function Categories() {
                           <Text className="font-vazir-semibold text-xs text-brand-600">ویرایش</Text>
                         </Pressable>
                         <Pressable onPress={() => archive(item)}>
-                          <Text className="font-vazir-semibold text-xs text-rose-500">بایگانی</Text>
+                          <Text className="font-vazir-semibold text-xs text-error">بایگانی</Text>
                         </Pressable>
                       </View>
                     ) : (

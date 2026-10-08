@@ -108,7 +108,7 @@ export default function Transfer() {
                 placeholder="مثلاً انتقال به حساب پس‌انداز"
               />
               {error ? (
-                <Text className="mb-3 font-vazir text-sm text-rose-500">{error}</Text>
+                <Text className="mb-3 font-vazir text-sm text-error">{error}</Text>
               ) : null}
               <PrimaryButton
                 title="انتقال وجه"

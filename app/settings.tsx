@@ -6,11 +6,13 @@ import { useColorScheme } from "nativewind";
 import { getTheme, setTheme, Theme } from "@/src/db/database";
 import { Content, Screen, ScreenHeader, ScreenScroll, useResponsive } from "@/src/components/layout/Screen";
 import { SurfaceCard } from "@/src/components/ui";
+import { usePalette } from "@/src/theme/colors";
 
 export default function Settings() {
   const router = useRouter();
   const { setColorScheme } = useColorScheme();
   const { isWide } = useResponsive();
+  const colors = usePalette();
   const [selected, setSelected] = useState<Theme>("system");
 
   useEffect(() => {
@@ -65,8 +67,8 @@ export default function Settings() {
                         : "border-line bg-panel dark:border-line-dark dark:bg-panel-dark"
                     }`}
                   >
-                    <View className="h-11 w-11 items-center justify-center rounded-2xl bg-white dark:bg-slate-800">
-                      <Ionicons name={option.icon} size={21} color="#059669" />
+                    <View className="h-11 w-11 items-center justify-center rounded-2xl bg-panel dark:bg-fill-dark">
+                      <Ionicons name={option.icon} size={21} color={colors.primary} />
                     </View>
                     <View className="mr-3 flex-1">
                       <Text className="font-vazir-semibold text-sm text-ink dark:text-ink-inverse">
@@ -79,7 +81,7 @@ export default function Settings() {
                     <Ionicons
                       name={active ? "checkmark-circle" : "ellipse-outline"}
                       size={22}
-                      color={active ? "#059669" : "#8a9991"}
+                      color={active ? colors.primary : colors.textMuted}
                     />
                   </Pressable>
                 );
@@ -94,7 +96,7 @@ export default function Settings() {
                 اتصال به سرور کار می‌کند.
               </Text>
               <View className="mt-5 flex-row items-center">
-                <Ionicons name="shield-checkmark-outline" size={20} color="#059669" />
+                <Ionicons name="shield-checkmark-outline" size={20} color={colors.primary} />
                 <Text className="mr-2 font-vazir-semibold text-xs text-brand-600">
                   داده‌های شما خصوصی می‌مانند
                 </Text>

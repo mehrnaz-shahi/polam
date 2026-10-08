@@ -14,6 +14,7 @@ import { StatusBar } from "expo-status-bar";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { getDb, getTheme } from "@/src/db/database";
 import { useColorScheme } from "nativewind";
+import { palette, darkPalette } from "@/src/theme/colors";
 
 SplashScreen.preventAutoHideAsync();
 I18nManager.allowRTL(true);
@@ -45,7 +46,8 @@ export default function RootLayout() {
         screenOptions={{
           headerShown: false,
           contentStyle: {
-            backgroundColor: colorScheme === "dark" ? "#07110d" : "#f4f8f6",
+            backgroundColor:
+              colorScheme === "dark" ? darkPalette.background : palette.background,
           },
           animation: "slide_from_left",
         }}

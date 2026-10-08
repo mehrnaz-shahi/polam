@@ -2,6 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { Pressable, Text, View } from "react-native";
 import { Transaction } from "@/src/db/database";
 import { rial, shortDate } from "@/src/utils/format";
+import { usePalette } from "@/src/theme/colors";
 
 export function TransactionRow({
   item,
@@ -12,17 +13,18 @@ export function TransactionRow({
   onPress?: () => void;
   onLongPress?: () => void;
 }) {
+  const colors = usePalette();
   const income = item.type === "income";
   return (
     <Pressable
       onPress={onPress}
       onLongPress={onLongPress}
       accessibilityRole={onPress ? "button" : undefined}
-      className="mb-3 flex-row items-center rounded-[24px] border border-line bg-panel p-4 active:opacity-80 dark:border-line-dark dark:bg-panel-dark"
+      className="mb-3 flex-row items-center rounded-2xl border border-line bg-panel p-4 active:opacity-80 dark:border-line-dark dark:bg-panel-dark"
     >
       <View
         className={`h-12 w-12 items-center justify-center rounded-2xl ${
-          income ? "bg-brand-50 dark:bg-brand-900" : "bg-rose-50 dark:bg-rose-950"
+          income ? "bg-success-light dark:bg-success-muted" : "bg-error-light dark:bg-error-muted"
         }`}
       >
         <Text className="text-xl">{item.category_icon}</Text>
@@ -39,7 +41,7 @@ export function TransactionRow({
         <Text
           numberOfLines={1}
           adjustsFontSizeToFit
-          className={`font-vazir-bold text-sm ${income ? "text-brand-600" : "text-rose-500"}`}
+          className={`font-vazir-bold text-sm ${income ? "text-success" : "text-error"}`}
         >
           {income ? "+" : "−"} {rial(item.amount / 10)} تومان
         </Text>
@@ -47,7 +49,7 @@ export function TransactionRow({
           <Ionicons
             name="chevron-back"
             size={14}
-            color="#8a9991"
+            color={colors.textMuted}
             style={{ marginTop: 6 }}
           />
         ) : null}

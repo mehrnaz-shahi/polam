@@ -12,6 +12,7 @@ import {
   ViewProps,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { usePalette } from "@/src/theme/colors";
 
 export function useResponsive() {
   const { width, height } = useWindowDimensions();
@@ -73,7 +74,7 @@ export function ScreenScroll({
       showsVerticalScrollIndicator={false}
       {...props}
       className={`flex-1 ${props.className ?? ""}`}
-      contentContainerClassName={`pb-12 ${contentContainerClassName}`}
+      contentContainerClassName={`${contentContainerClassName.includes("pb-") ? "" : "pb-12"} ${contentContainerClassName}`}
     >
       {children}
     </ScrollView>
@@ -101,8 +102,9 @@ export function ScreenHeader({
   onBack?: () => void;
   trailing?: ReactNode;
 }) {
+  const colors = usePalette();
   return (
-    <View className="mb-6 flex-row items-center">
+    <View className="mb-5 flex-row items-center">
       {onBack ? (
         <Pressable
           onPress={onBack}
@@ -110,7 +112,7 @@ export function ScreenHeader({
           accessibilityLabel="بازگشت"
           className="h-11 w-11 items-center justify-center rounded-2xl border border-line bg-panel active:opacity-70 dark:border-line-dark dark:bg-panel-dark"
         >
-          <Ionicons name="arrow-forward" size={21} color="#66776e" />
+          <Ionicons name="arrow-forward" size={21} color={colors.textSecondary} />
         </Pressable>
       ) : null}
       <View className={onBack ? "mr-4 flex-1" : "flex-1"}>

@@ -9,7 +9,7 @@ export default function More() {
   return (
     <Screen>
       <ScreenScroll>
-        <Content className="pt-4">
+        <Content className="pb-36 pt-4">
           <ScreenHeader title="بیشتر" subtitle="مدیریت و شخصی‌سازی پولکی" />
           <View className={isWide ? "flex-row flex-wrap gap-4" : "gap-3"}>
             <View className={isWide ? "w-[48%]" : ""}>

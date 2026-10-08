@@ -13,6 +13,7 @@ import {
 } from "react-native";
 import { Transfer } from "@/src/db/database";
 import { persianDate, toman } from "@/src/utils/format";
+import { usePalette } from "@/src/theme/colors";
 
 export function SurfaceCard({
   children,
@@ -22,7 +23,7 @@ export function SurfaceCard({
   return (
     <View
       {...props}
-      className={`rounded-card border border-line bg-panel p-5 dark:border-line-dark dark:bg-panel-dark ${className}`}
+      className={`rounded-card border border-line bg-panel p-4 dark:border-line-dark dark:bg-panel-dark ${className}`}
     >
       {children}
     </View>
@@ -78,6 +79,7 @@ export function IconButton({
   label: string;
   danger?: boolean;
 }) {
+  const colors = usePalette();
   return (
     <Pressable
       onPress={onPress}
@@ -85,11 +87,11 @@ export function IconButton({
       accessibilityLabel={label}
       className={`h-11 w-11 items-center justify-center rounded-2xl border ${
         danger
-          ? "border-rose-100 bg-rose-50 dark:border-rose-900 dark:bg-rose-950"
+          ? "border-error-light bg-error-light dark:border-error-muted dark:bg-error-muted"
           : "border-line bg-panel dark:border-line-dark dark:bg-panel-dark"
       }`}
     >
-      <Ionicons name={icon} size={20} color={danger ? "#e11d48" : "#66776e"} />
+      <Ionicons name={icon} size={20} color={danger ? colors.error : colors.textSecondary} />
     </Pressable>
   );
 }
@@ -100,20 +102,21 @@ export function Field({
   className = "",
   ...props
 }: { label: string; error?: string } & TextInputProps) {
+  const colors = usePalette();
   return (
     <View className={`mb-4 ${className}`}>
       <Text className="mb-2 font-vazir-semibold text-sm text-ink dark:text-ink-inverse">
         {label}
       </Text>
       <TextInput
-        placeholderTextColor="#8a9991"
+        placeholderTextColor={colors.textMuted}
         {...props}
         className={`min-h-14 rounded-2xl border bg-panel px-4 text-right font-vazir text-[15px] text-ink dark:bg-panel-dark dark:text-ink-inverse ${
-          error ? "border-rose-400" : "border-line dark:border-line-dark"
+          error ? "border-error" : "border-line dark:border-line-dark"
         } ${props.multiline ? "py-4" : ""}`}
       />
       {error ? (
-        <Text className="mt-1 font-vazir text-xs text-rose-500">{error}</Text>
+        <Text className="mt-1 font-vazir text-xs text-error">{error}</Text>
       ) : null}
     </View>
   );
@@ -128,14 +131,15 @@ export function SearchField({
   onChangeText: (value: string) => void;
   placeholder: string;
 }) {
+  const colors = usePalette();
   return (
     <View className="flex-row items-center rounded-2xl border border-line bg-panel px-4 dark:border-line-dark dark:bg-panel-dark">
-      <Ionicons name="search-outline" size={20} color="#8a9991" />
+      <Ionicons name="search-outline" size={20} color={colors.textMuted} />
       <TextInput
         value={value}
         onChangeText={onChangeText}
         placeholder={placeholder}
-        placeholderTextColor="#9aa59f"
+        placeholderTextColor={colors.textMuted}
         className="mr-2 h-14 flex-1 font-vazir text-right text-sm text-ink dark:text-ink-inverse"
       />
     </View>
@@ -229,10 +233,11 @@ export function EmptyState({
   description?: string;
   icon?: keyof typeof Ionicons.glyphMap;
 }) {
+  const colors = usePalette();
   return (
     <SurfaceCard className="items-center px-6 py-10">
       <View className="h-14 w-14 items-center justify-center rounded-2xl bg-brand-50 dark:bg-brand-900">
-        <Ionicons name={icon} size={26} color="#059669" />
+        <Ionicons name={icon} size={26} color={colors.primary} />
       </View>
       <Text className="mt-4 text-center font-vazir-bold text-base text-ink dark:text-ink-inverse">
         {title}
@@ -259,6 +264,7 @@ export function SelectionRow({
   value: string;
   onChange: (id: string) => void;
 }) {
+  const colors = usePalette();
   return (
     <View className="mb-5">
       <Text className="mb-2 font-vazir-semibold text-sm text-ink dark:text-ink-inverse">
@@ -280,7 +286,7 @@ export function SelectionRow({
               <View className="flex-row items-center justify-between">
                 <Text className="text-xl">{item.icon ?? "●"}</Text>
                 {selected ? (
-                  <Ionicons name="checkmark-circle" size={18} color="#059669" />
+                  <Ionicons name="checkmark-circle" size={18} color={colors.primary} />
                 ) : null}
               </View>
               <Text
@@ -313,6 +319,7 @@ export function AmountInput({
   autoFocus?: boolean;
   label?: string;
 }) {
+  const colors = usePalette();
   const amount = Number(value.replace(/[٬,\s]/g, ""));
   return (
     <SurfaceCard className="mb-6 border-brand-100 bg-brand-50 dark:border-brand-900 dark:bg-brand-900">
@@ -325,7 +332,7 @@ export function AmountInput({
         value={value}
         onChangeText={onChangeText}
         placeholder="۰"
-        placeholderTextColor="#86a397"
+        placeholderTextColor={colors.textMuted}
         className="mt-2 text-right font-vazir-bold text-4xl text-ink dark:text-ink-inverse"
       />
       <Text className="mt-2 font-vazir text-xs text-muted">
@@ -346,6 +353,7 @@ export function DateField({
   label?: string;
   placeholder?: string;
 }) {
+  const colors = usePalette();
   const [visible, setVisible] = useState(false);
   return (
     <View className="mb-4">
@@ -356,11 +364,11 @@ export function DateField({
         onPress={() => setVisible(true)}
         className="min-h-14 flex-row items-center rounded-2xl border border-line bg-panel px-4 dark:border-line-dark dark:bg-panel-dark"
       >
-        <Ionicons name="calendar-outline" size={20} color="#059669" />
+        <Ionicons name="calendar-outline" size={20} color={colors.primary} />
         <Text className="mr-3 flex-1 font-vazir text-sm text-ink dark:text-ink-inverse">
           {value ? persianDate(value.toISOString()) : placeholder}
         </Text>
-        <Ionicons name="chevron-back" size={17} color="#8a9991" />
+        <Ionicons name="chevron-back" size={17} color={colors.textMuted} />
       </Pressable>
       {visible ? (
         <DateTimePicker
@@ -389,12 +397,13 @@ export function MenuCard({
   onPress: () => void;
   accent?: "brand" | "rose" | "blue";
 }) {
+  const colors = usePalette();
   const color =
-    accent === "rose" ? "#e11d48" : accent === "blue" ? "#2563eb" : "#059669";
+    accent === "rose" ? colors.error : accent === "blue" ? colors.primaryLight : colors.primary;
   return (
     <Pressable
       onPress={onPress}
-      className="flex-row items-center rounded-card border border-line bg-panel p-5 active:opacity-80 dark:border-line-dark dark:bg-panel-dark"
+      className="flex-row items-center rounded-card border border-line bg-panel p-4 active:opacity-80 dark:border-line-dark dark:bg-panel-dark"
     >
       <View className="h-12 w-12 items-center justify-center rounded-2xl bg-brand-50 dark:bg-brand-900">
         <Ionicons name={icon} size={23} color={color} />
@@ -407,7 +416,7 @@ export function MenuCard({
           <Text className="mt-1 font-vazir text-xs text-muted">{description}</Text>
         ) : null}
       </View>
-      <Ionicons name="chevron-back" size={19} color="#8a9991" />
+      <Ionicons name="chevron-back" size={19} color={colors.textMuted} />
     </Pressable>
   );
 }
@@ -423,9 +432,9 @@ export function StatCard({
 }) {
   const color =
     tone === "positive"
-      ? "text-brand-600"
+      ? "text-success"
       : tone === "negative"
-        ? "text-rose-500"
+        ? "text-error"
         : "text-ink dark:text-ink-inverse";
   return (
     <SurfaceCard className="flex-1">
@@ -455,7 +464,7 @@ export function BalanceHero({
   expenseLabel: string;
 }) {
   return (
-    <View className="overflow-hidden rounded-[32px] bg-brand-600 p-6">
+    <View className="overflow-hidden rounded-3xl bg-brand-600 p-5">
       <View className="absolute -left-8 -top-10 h-36 w-36 rounded-full bg-white/10" />
       <View className="absolute -bottom-12 -right-6 h-28 w-28 rounded-full bg-white/5" />
       <Text className="font-vazir text-sm text-white/80">موجودی کل</Text>
@@ -494,10 +503,11 @@ export function BalanceHero({
 }
 
 export function TransferRow({ item }: { item: Transfer }) {
+  const colors = usePalette();
   return (
     <View className="mt-4 flex-row items-center">
-      <View className="h-11 w-11 items-center justify-center rounded-2xl bg-blue-50 dark:bg-blue-950">
-        <Ionicons name="swap-horizontal" size={18} color="#2563eb" />
+      <View className="h-11 w-11 items-center justify-center rounded-2xl bg-brand-50 dark:bg-brand-900">
+        <Ionicons name="swap-horizontal" size={18} color={colors.primary} />
       </View>
       <View className="mr-3 flex-1">
         <Text numberOfLines={1} className="font-vazir-semibold text-sm text-ink dark:text-ink-inverse">

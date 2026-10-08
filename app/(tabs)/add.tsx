@@ -9,7 +9,7 @@ export default function Add() {
   return (
     <Screen>
       <ScreenScroll contentContainerClassName="flex-grow justify-center">
-        <Content className="py-8">
+        <Content className="pb-36 pt-8">
           <ScreenHeader title="ثبت تراکنش" subtitle="چه چیزی می‌خواهید ثبت کنید؟" />
           <View className={isWide ? "flex-row gap-4" : "gap-3"}>
             <View className={isWide ? "flex-1" : ""}>

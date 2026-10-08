@@ -7,10 +7,12 @@ import { toman, monthName } from "@/src/utils/format";
 import { TransactionRow } from "@/src/components/TransactionRow";
 import { Content, Screen, ScreenScroll, useResponsive } from "@/src/components/layout/Screen";
 import { BalanceHero, EmptyState } from "@/src/components/ui";
+import { usePalette } from "@/src/theme/colors";
 
 export default function Home() {
   const router = useRouter();
   const { isWide } = useResponsive();
+  const colors = usePalette();
   const [data, setData] = useState({ balance: 0, income: 0, expense: 0 });
   const [items, setItems] = useState<Transaction[]>([]);
   const [refreshing, setRefreshing] = useState(false);
@@ -36,10 +38,10 @@ export default function Home() {
     <Screen>
       <ScreenScroll
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={refresh} tintColor="#059669" />
+          <RefreshControl refreshing={refreshing} onRefresh={refresh} tintColor={colors.primary} />
         }
       >
-        <Content className="pt-4">
+        <Content className="pb-36 pt-4">
           <View className="mb-6 flex-row items-center">
             <View className="flex-1">
               <Text className="font-vazir text-sm text-muted">سلام، خوش آمدید</Text>
@@ -48,7 +50,7 @@ export default function Home() {
               </Text>
             </View>
             <View className="h-12 w-12 items-center justify-center rounded-2xl bg-brand-100 dark:bg-brand-900">
-              <Ionicons name="wallet-outline" size={24} color="#059669" />
+              <Ionicons name="wallet-outline" size={24} color={colors.primary} />
             </View>
           </View>
           <View className={isWide ? "flex-row gap-6" : ""}>
@@ -110,12 +112,13 @@ function Quick({
   icon: keyof typeof Ionicons.glyphMap;
   onPress: () => void;
 }) {
+  const colors = usePalette();
   return (
     <Pressable
       onPress={onPress}
-      className="flex-1 items-center rounded-3xl border border-line bg-panel p-4 active:opacity-70 dark:border-line-dark dark:bg-panel-dark"
+      className="flex-1 items-center rounded-2xl border border-line bg-panel p-4 active:opacity-70 dark:border-line-dark dark:bg-panel-dark"
     >
-      <Ionicons name={icon} size={22} color="#059669" />
+      <Ionicons name={icon} size={22} color={colors.primary} />
       <Text className="mt-2 font-vazir-semibold text-xs text-ink dark:text-ink-inverse">
         {label}
       </Text>
