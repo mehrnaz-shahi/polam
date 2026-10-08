@@ -1,16 +1,19 @@
 import { Ionicons } from "@expo/vector-icons";
-import DateTimePicker from "@react-native-community/datetimepicker";
 import { ReactNode, useState } from "react";
 import {
   ActivityIndicator,
+  Modal,
   Pressable,
   ScrollView,
+  StyleSheet,
   Text,
   TextInput,
   TextInputProps,
   View,
   ViewProps,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { JalaliDatePicker } from "@/src/components/ui/JalaliDatePicker";
 import { Transfer } from "@/src/db/database";
 import { DoodleIcon, DoodleName } from "@/src/components/icons/DoodleIcon";
 import { parseAmount, persianDate, toman } from "@/src/utils/format";
@@ -409,13 +412,19 @@ export function DateField({
   placeholder?: string;
 }) {
   const colors = usePalette();
+  const insets = useSafeAreaInsets();
   const [visible, setVisible] = useState(false);
+  const [draft, setDraft] = useState(value ?? new Date());
+  const open = () => {
+    setDraft(value ?? new Date());
+    setVisible(true);
+  };
   return (
-    <View className="mb-4 items-start">
+    <View className="mb-4 w-full">
       <Text className="mb-2 font-sans-semibold text-sm text-ink text-left">{label}</Text>
       <Pressable
-        onPress={() => setVisible(true)}
-        className="min-h-14 flex-row items-center rounded-2xl border border-line bg-panel px-4"
+        onPress={open}
+        className="min-h-14 w-full flex-row items-center rounded-2xl border border-line bg-panel px-4"
       >
         <Ionicons name="calendar-outline" size={20} color={colors.primary} />
         <Text className="ms-3 flex-1 font-sans text-sm text-ink text-left">
@@ -423,16 +432,23 @@ export function DateField({
         </Text>
         <Ionicons name="chevron-back" size={17} color={colors.textMuted} />
       </Pressable>
-      {visible ? (
-        <DateTimePicker
-          value={value || new Date()}
-          mode="date"
-          onChange={(_, date) => {
-            setVisible(false);
-            if (date) onChange(date);
-          }}
-        />
-      ) : null}
+      <Modal visible={visible} transparent animationType="fade" onRequestClose={() => setVisible(false)}>
+        <View className="flex-1 justify-end">
+          <Pressable style={StyleSheet.absoluteFill} className="bg-black/40" onPress={() => setVisible(false)} />
+          <View className="rounded-t-[28px] bg-surface px-5 pt-5" style={{ paddingBottom: insets.bottom + 16 }}>
+            <Text className="mb-4 font-sans-bold text-base text-ink text-left">{label}</Text>
+            <JalaliDatePicker
+              key={draft.toISOString()}
+              value={draft}
+              onConfirm={(date) => {
+                onChange(date);
+                setVisible(false);
+              }}
+              onClose={() => setVisible(false)}
+            />
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
