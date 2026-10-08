@@ -1,1 +1,175 @@
-import {useEffect,useState} from 'react';import {Pressable,Text,TextInput,View,ScrollView} from 'react-native';import {useRouter} from 'expo-router';import {addAccount,listAccounts,Account} from '@/src/db/database';import {toman} from '@/src/utils/format';export default function Accounts(){const r=useRouter();const[a,setA]=useState<Account[]>([]);const[name,setName]=useState('');const[balance,setBalance]=useState('');const load=()=>listAccounts().then(setA);useEffect(()=>{load()},[]);const save=async()=>{if(!name.trim())return;await addAccount(name.trim(),'wallet',Number(balance||0)*10);setName('');setBalance('');load()};return <View className="flex-1 bg-surface px-5 pt-14 dark:bg-slate-950"><View className="flex-row items-center justify-between"><Pressable onPress={()=>r.back()}><Text className="text-2xl dark:text-white">→</Text></Pressable><Text className="font-vazir text-2xl font-bold dark:text-white">حساب‌ها</Text><View className="w-6"/></View><ScrollView className="mt-6">{a.map(x=><View key={x.id} className="mb-3 rounded-3xl bg-white p-5 dark:bg-slate-900"><Text className="font-vazir text-base font-bold dark:text-white">💳 {x.name}</Text><Text className="mt-2 font-vazir text-xl font-bold text-brand-600">{toman(x.balance)}</Text></View>)}<Text className="mb-2 mt-4 font-vazir text-sm font-semibold dark:text-white">حساب جدید</Text><TextInput value={name} onChangeText={setName} placeholder="نام حساب" placeholderTextColor="#9aa59f" className="rounded-2xl bg-white p-4 text-right font-vazir dark:bg-slate-900 dark:text-white"/><TextInput value={balance} onChangeText={setBalance} keyboardType="number-pad" placeholder="موجودی اولیه به تومان" placeholderTextColor="#9aa59f" className="mt-2 rounded-2xl bg-white p-4 text-right font-vazir dark:bg-slate-900 dark:text-white"/><Pressable onPress={save} className="mb-10 mt-3 items-center rounded-2xl bg-brand-600 py-4"><Text className="font-vazir font-bold text-white">افزودن حساب</Text></Pressable></ScrollView></View>}
+import { useCallback, useState } from "react";
+import { Alert, Pressable, Text, View } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { useFocusEffect, useRouter } from "expo-router";
+import {
+  addAccount,
+  listAccounts,
+  Account,
+  setAccountArchived,
+  updateAccount,
+} from "@/src/db/database";
+import { toman } from "@/src/utils/format";
+import { Content, Screen, ScreenHeader, ScreenScroll, useResponsive } from "@/src/components/layout/Screen";
+import { EmptyState, Field, PrimaryButton, SurfaceCard } from "@/src/components/ui";
+
+export default function Accounts() {
+  const router = useRouter();
+  const { isWide } = useResponsive();
+  const [accounts, setAccounts] = useState<Account[]>([]);
+  const [name, setName] = useState("");
+  const [balance, setBalance] = useState("");
+  const [editing, setEditing] = useState<string | null>(null);
+  const load = useCallback(() => listAccounts(true).then(setAccounts), []);
+
+  useFocusEffect(
+    useCallback(() => {
+      load();
+    }, [load]),
+  );
+
+  const save = async () => {
+    if (!name.trim()) return;
+    if (editing) {
+      await updateAccount(editing, { name: name.trim() });
+      setEditing(null);
+    } else {
+      await addAccount({
+        name: name.trim(),
+        type: "wallet",
+        balance: Math.round(Number(balance.replace(/[٬,\s]/g, "") || 0) * 10),
+      });
+    }
+    setName("");
+    setBalance("");
+    load();
+  };
+
+  const edit = (account: Account) => {
+    setEditing(account.id);
+    setName(account.name);
+    setBalance("");
+  };
+
+  const toggleArchive = (account: Account) =>
+    Alert.alert(
+      account.is_archived ? "فعال‌سازی حساب" : "بایگانی حساب",
+      `حساب «${account.name}» ${account.is_archived ? "فعال" : "بایگانی"} شود؟`,
+      [
+        { text: "انصراف", style: "cancel" },
+        {
+          text: "تأیید",
+          onPress: () => setAccountArchived(account.id, !Boolean(account.is_archived)).then(load),
+        },
+      ],
+    );
+
+  const form = (
+    <SurfaceCard>
+      <Text className="font-vazir-bold text-base text-ink dark:text-ink-inverse">
+        {editing ? "ویرایش حساب" : "افزودن حساب"}
+      </Text>
+      <View className="mt-4">
+        <Field label="نام حساب" value={name} onChangeText={setName} placeholder="مثلاً کیف پول" />
+        {!editing ? (
+          <Field
+            label="موجودی اولیه"
+            value={balance}
+            onChangeText={setBalance}
+            keyboardType="number-pad"
+            placeholder="مبلغ به تومان"
+          />
+        ) : null}
+        <PrimaryButton
+          title={editing ? "ذخیره تغییرات" : "افزودن حساب"}
+          onPress={save}
+          icon="checkmark"
+        />
+        {editing ? (
+          <Pressable
+            onPress={() => {
+              setEditing(null);
+              setName("");
+              setBalance("");
+            }}
+            className="mt-3 items-center py-2"
+          >
+            <Text className="font-vazir-semibold text-sm text-muted">انصراف</Text>
+          </Pressable>
+        ) : null}
+      </View>
+    </SurfaceCard>
+  );
+
+  return (
+    <Screen>
+      <ScreenScroll keyboard>
+        <Content className="pt-4">
+          <ScreenHeader
+            title="حساب‌ها"
+            subtitle="مدیریت موجودی و کیف پول‌ها"
+            onBack={() => router.back()}
+          />
+          <View className={isWide ? "flex-row gap-6" : ""}>
+            <View className={isWide ? "flex-1" : ""}>
+              {accounts.length ? (
+                accounts.map((account) => (
+                  <SurfaceCard
+                    key={account.id}
+                    className={`mb-3 ${account.is_archived ? "opacity-50" : ""}`}
+                  >
+                    <View className="flex-row items-center">
+                      <View className="h-11 w-11 items-center justify-center rounded-2xl bg-brand-50 dark:bg-brand-900">
+                        <Ionicons name="wallet-outline" size={21} color="#059669" />
+                      </View>
+                      <View className="mr-3 flex-1">
+                        <Text className="font-vazir-bold text-base text-ink dark:text-ink-inverse">
+                          {account.name}
+                        </Text>
+                        <Text className="mt-1 font-vazir text-xs text-muted">
+                          {account.is_archived ? "بایگانی‌شده" : "حساب فعال"}
+                        </Text>
+                      </View>
+                      <Text
+                        numberOfLines={1}
+                        adjustsFontSizeToFit
+                        className="max-w-[40%] font-vazir-bold text-lg text-brand-600"
+                      >
+                        {toman(account.balance)}
+                      </Text>
+                    </View>
+                    <View className="mt-4 flex-row gap-2">
+                      <Pressable
+                        onPress={() => edit(account)}
+                        className="rounded-xl bg-slate-100 px-4 py-2 dark:bg-slate-800"
+                      >
+                        <Text className="font-vazir-semibold text-xs text-ink dark:text-ink-inverse">
+                          ویرایش
+                        </Text>
+                      </Pressable>
+                      <Pressable
+                        onPress={() => toggleArchive(account)}
+                        className="rounded-xl bg-slate-100 px-4 py-2 dark:bg-slate-800"
+                      >
+                        <Text className="font-vazir-semibold text-xs text-muted">
+                          {account.is_archived ? "فعال‌سازی" : "بایگانی"}
+                        </Text>
+                      </Pressable>
+                    </View>
+                  </SurfaceCard>
+                ))
+              ) : (
+                <EmptyState
+                  title="حسابی وجود ندارد"
+                  description="یک حساب برای شروع ثبت تراکنش بسازید."
+                  icon="wallet-outline"
+                />
+              )}
+            </View>
+            <View className={isWide ? "w-[38%]" : "mt-3"}>{form}</View>
+          </View>
+        </Content>
+      </ScreenScroll>
+    </Screen>
+  );
+}

@@ -1,3 +1,46 @@
-import { useRouter } from 'expo-router';import { Pressable, Text, View } from 'react-native';
-export default function Add(){const r=useRouter();return <View className="flex-1 items-center justify-center bg-surface px-5 dark:bg-slate-950"><Text className="font-vazir text-2xl font-bold text-ink dark:text-white">ثبت تراکنش</Text><Text className="mt-2 font-vazir text-sm text-muted">نوع تراکنش را انتخاب کنید</Text><View className="mt-8 w-full gap-3"><Action title="ثبت هزینه" icon="−" onPress={()=>r.push('/expense')}/><Action title="ثبت درآمد" icon="+" onPress={()=>r.push('/income')}/><Action title="انتقال بین حساب‌ها" icon="⇄" onPress={()=>r.push('/transfer')}/></View></View>}
-function Action({title,icon,onPress}:{title:string;icon:string;onPress:()=>void}){return <Pressable onPress={onPress} className="flex-row items-center rounded-3xl bg-white p-5 dark:bg-slate-900"><View className="h-12 w-12 items-center justify-center rounded-2xl bg-brand-50 dark:bg-brand-700/20"><Text className="text-2xl font-bold text-brand-600">{icon}</Text></View><Text className="mr-4 font-vazir text-base font-semibold text-ink dark:text-white">{title}</Text></Pressable>}
+import { useRouter } from "expo-router";
+import { View } from "react-native";
+import { Content, Screen, ScreenHeader, ScreenScroll, useResponsive } from "@/src/components/layout/Screen";
+import { MenuCard } from "@/src/components/ui";
+
+export default function Add() {
+  const router = useRouter();
+  const { isWide } = useResponsive();
+  return (
+    <Screen>
+      <ScreenScroll contentContainerClassName="flex-grow justify-center">
+        <Content className="py-8">
+          <ScreenHeader title="ثبت تراکنش" subtitle="چه چیزی می‌خواهید ثبت کنید؟" />
+          <View className={isWide ? "flex-row gap-4" : "gap-3"}>
+            <View className={isWide ? "flex-1" : ""}>
+              <MenuCard
+                title="ثبت هزینه"
+                description="خریدها و پرداخت‌های روزانه"
+                icon="arrow-up-circle-outline"
+                accent="rose"
+                onPress={() => router.push("/expense")}
+              />
+            </View>
+            <View className={isWide ? "flex-1" : ""}>
+              <MenuCard
+                title="ثبت درآمد"
+                description="حقوق، فروش و سایر دریافتی‌ها"
+                icon="arrow-down-circle-outline"
+                onPress={() => router.push("/income")}
+              />
+            </View>
+            <View className={isWide ? "flex-1" : ""}>
+              <MenuCard
+                title="انتقال بین حساب‌ها"
+                description="جابجایی موجودی بدون هزینه"
+                icon="swap-horizontal-outline"
+                accent="blue"
+                onPress={() => router.push("/transfer")}
+              />
+            </View>
+          </View>
+        </Content>
+      </ScreenScroll>
+    </Screen>
+  );
+}

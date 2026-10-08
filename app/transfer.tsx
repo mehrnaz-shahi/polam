@@ -1,1 +1,125 @@
-import {useEffect,useState} from 'react';import {Pressable,ScrollView,Text,TextInput,View} from 'react-native';import {useRouter} from 'expo-router';import DateTimePicker from '@react-native-community/datetimepicker';import {addTransfer,listAccounts,Account} from '@/src/db/database';import {persianDate} from '@/src/utils/format';export default function Transfer(){const r=useRouter();const[accounts,setAccounts]=useState<Account[]>([]);const[from,setFrom]=useState('');const[to,setTo]=useState('');const[amount,setAmount]=useState('');const[note,setNote]=useState('');const[date,setDate]=useState(new Date());const[show,setShow]=useState(false);useEffect(()=>{listAccounts().then(a=>{setAccounts(a);setFrom(a[0]?.id??'');setTo(a[1]?.id??'')})},[]);const save=async()=>{const n=Number(amount.replace(/,/g,''));if(!n||!from||!to||from===to)return;await addTransfer({source:from,destination:to,amount:n*10,date:date.toISOString(),note});r.back()};return <ScrollView className="flex-1 bg-surface px-5 pt-14 dark:bg-slate-950"><View className="flex-row justify-between"><Pressable onPress={()=>r.back()}><Text className="text-2xl dark:text-white">→</Text></Pressable><Text className="font-vazir text-xl font-bold dark:text-white">انتقال وجه</Text><View className="w-6"/></View><Picker label="از حساب" items={accounts} value={from} onChange={setFrom}/><View className="items-center py-2"><Text className="text-2xl text-brand-600">↓</Text></View><Picker label="به حساب" items={accounts} value={to} onChange={setTo}/><Text className="mb-2 mt-6 font-vazir text-sm font-semibold dark:text-white">مبلغ</Text><TextInput keyboardType="number-pad" value={amount} onChangeText={setAmount} placeholder="۰" placeholderTextColor="#9aa59f" className="rounded-2xl bg-white p-4 text-right font-vazir text-2xl dark:bg-slate-900 dark:text-white"/><Text className="mb-2 mt-6 font-vazir text-sm font-semibold dark:text-white">تاریخ</Text><Pressable onPress={()=>setShow(true)} className="rounded-2xl bg-white p-4 dark:bg-slate-900"><Text className="font-vazir dark:text-white">{persianDate(date.toISOString())}</Text></Pressable>{show&&<DateTimePicker value={date} mode="date" onChange={(_,d)=>{setShow(false);if(d)setDate(d)}}/>}<TextInput value={note} onChangeText={setNote} placeholder="یادداشت اختیاری" placeholderTextColor="#9aa59f" className="mt-6 rounded-2xl bg-white p-4 text-right font-vazir dark:bg-slate-900 dark:text-white"/><Pressable onPress={save} className="mb-10 mt-6 items-center rounded-2xl bg-brand-600 py-4"><Text className="font-vazir font-bold text-white">انتقال وجه</Text></Pressable></ScrollView>}function Picker({label,items,value,onChange}:{label:string;items:Account[];value:string;onChange:(v:string)=>void}){return <View className="mt-6"><Text className="mb-2 font-vazir text-sm font-semibold dark:text-white">{label}</Text><View className="gap-2">{items.map(a=><Pressable key={a.id} onPress={()=>onChange(a.id)} className={`rounded-2xl p-4 ${value===a.id?'border border-brand-600 bg-brand-50 dark:bg-brand-700/20':'bg-white dark:bg-slate-900'}`}><Text className="font-vazir dark:text-white">{a.name}</Text></Pressable>)}</View></View>}
+import { useEffect, useState } from "react";
+import { Alert, Text, View } from "react-native";
+import { useRouter } from "expo-router";
+import { addTransfer, listAccounts, Account } from "@/src/db/database";
+import { toman } from "@/src/utils/format";
+import { Content, Screen, ScreenHeader, ScreenScroll, useResponsive } from "@/src/components/layout/Screen";
+import {
+  AmountInput,
+  DateField,
+  Field,
+  PrimaryButton,
+  SelectionRow,
+  SurfaceCard,
+} from "@/src/components/ui";
+
+export default function Transfer() {
+  const router = useRouter();
+  const { isWide } = useResponsive();
+  const [accounts, setAccounts] = useState<Account[]>([]);
+  const [from, setFrom] = useState("");
+  const [to, setTo] = useState("");
+  const [amount, setAmount] = useState("");
+  const [note, setNote] = useState("");
+  const [date, setDate] = useState(new Date());
+  const [error, setError] = useState("");
+  const [saving, setSaving] = useState(false);
+  useEffect(() => {
+    listAccounts().then((a) => {
+      setAccounts(a);
+      setFrom(a[0]?.id ?? "");
+      setTo(a[1]?.id ?? "");
+    });
+  }, []);
+  const save = async () => {
+    const n = Number(amount.replace(/[٬,\s]/g, ""));
+    if (!n) {
+      setError("مبلغ را وارد کنید");
+      return;
+    }
+    if (!from || !to) {
+      setError("هر دو حساب را انتخاب کنید");
+      return;
+    }
+    if (from === to) {
+      setError("حساب مبدا و مقصد باید متفاوت باشند");
+      return;
+    }
+    const source = accounts.find((a) => a.id === from);
+    if ((source?.balance ?? 0) < n * 10) {
+      setError("موجودی حساب مبدا کافی نیست");
+      return;
+    }
+    setSaving(true);
+    try {
+      await addTransfer({
+        source: from,
+        destination: to,
+        amount: n * 10,
+        date: date.toISOString(),
+        note: note.trim(),
+      });
+      router.back();
+    } catch {
+      Alert.alert("خطا", "انتقال انجام نشد");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const options = accounts.map((account) => ({
+    id: account.id,
+    title: account.name,
+    icon: "💳",
+    meta: toman(account.balance),
+  }));
+
+  return (
+    <Screen>
+      <ScreenScroll keyboard>
+        <Content className="pt-4">
+          <ScreenHeader
+            title="انتقال وجه"
+            subtitle="جابجایی امن بین حساب‌های شما"
+            onBack={() => router.back()}
+          />
+          <View className={isWide ? "flex-row gap-6" : ""}>
+            <View className={isWide ? "w-[38%]" : ""}>
+              <AmountInput value={amount} onChangeText={setAmount} />
+              {isWide ? (
+                <SurfaceCard>
+                  <Text className="font-vazir-bold text-base text-ink dark:text-ink-inverse">
+                    انتقال داخلی
+                  </Text>
+                  <Text className="mt-2 font-vazir text-sm leading-7 text-muted">
+                    انتقال بین حساب‌ها روی درآمد و هزینه ماهانه اثری ندارد.
+                  </Text>
+                </SurfaceCard>
+              ) : null}
+            </View>
+            <View className={isWide ? "flex-1" : ""}>
+              <SelectionRow label="از حساب" items={options} value={from} onChange={setFrom} />
+              <SelectionRow label="به حساب" items={options} value={to} onChange={setTo} />
+              <DateField value={date} onChange={(next) => next && setDate(next)} />
+              <Field
+                label="یادداشت (اختیاری)"
+                value={note}
+                onChangeText={setNote}
+                placeholder="مثلاً انتقال به حساب پس‌انداز"
+              />
+              {error ? (
+                <Text className="mb-3 font-vazir text-sm text-rose-500">{error}</Text>
+              ) : null}
+              <PrimaryButton
+                title="انتقال وجه"
+                icon="swap-horizontal"
+                loading={saving}
+                onPress={save}
+              />
+            </View>
+          </View>
+        </Content>
+      </ScreenScroll>
+    </Screen>
+  );
+}

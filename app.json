@@ -3,7 +3,7 @@
     "name": "پولکی",
     "slug": "poolaki-offline",
     "version": "1.0.0",
-    "orientation": "portrait",
+    "orientation": "default",
     "userInterfaceStyle": "automatic",
     "scheme": "poolaki",
     "plugins": ["expo-router", "expo-sqlite", "expo-font"],

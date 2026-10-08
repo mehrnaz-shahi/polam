@@ -1,1 +1,44 @@
-import { useRouter } from 'expo-router';import { Pressable, Text, View } from 'react-native';export default function More(){const r=useRouter();return <View className="flex-1 bg-surface px-5 pt-14 dark:bg-slate-950"><Text className="font-vazir text-2xl font-bold text-ink dark:text-white">بیشتر</Text><View className="mt-6 gap-3"><Item title="حساب‌ها" icon="🏦" onPress={()=>r.push('/accounts')}/><Item title="دسته‌بندی‌ها" icon="🗂️" onPress={()=>r.push('/categories')}/><Item title="تنظیمات ظاهر" icon="◐" onPress={()=>r.push('/settings')}/></View></View>};function Item({title,icon,onPress}:{title:string;icon:string;onPress:()=>void}){return <Pressable onPress={onPress} className="flex-row items-center rounded-3xl bg-white p-5 dark:bg-slate-900"><Text className="text-xl">{icon}</Text><Text className="mr-4 font-vazir text-base font-semibold text-ink dark:text-white">{title}</Text><Text className="mr-auto text-xl text-muted">‹</Text></Pressable>}
+import { useRouter } from "expo-router";
+import { View } from "react-native";
+import { Content, Screen, ScreenHeader, ScreenScroll, useResponsive } from "@/src/components/layout/Screen";
+import { MenuCard } from "@/src/components/ui";
+
+export default function More() {
+  const router = useRouter();
+  const { isWide } = useResponsive();
+  return (
+    <Screen>
+      <ScreenScroll>
+        <Content className="pt-4">
+          <ScreenHeader title="بیشتر" subtitle="مدیریت و شخصی‌سازی پولکی" />
+          <View className={isWide ? "flex-row flex-wrap gap-4" : "gap-3"}>
+            <View className={isWide ? "w-[48%]" : ""}>
+              <MenuCard
+                title="حساب‌ها"
+                description="موجودی‌ها و کیف پول‌ها"
+                icon="wallet-outline"
+                onPress={() => router.push("/accounts")}
+              />
+            </View>
+            <View className={isWide ? "w-[48%]" : ""}>
+              <MenuCard
+                title="دسته‌بندی‌ها"
+                description="مدیریت هزینه و درآمد"
+                icon="grid-outline"
+                onPress={() => router.push("/categories")}
+              />
+            </View>
+            <View className={isWide ? "w-[48%]" : ""}>
+              <MenuCard
+                title="تنظیمات"
+                description="ظاهر و اطلاعات برنامه"
+                icon="settings-outline"
+                onPress={() => router.push("/settings")}
+              />
+            </View>
+          </View>
+        </Content>
+      </ScreenScroll>
+    </Screen>
+  );
+}

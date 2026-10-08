@@ -1,8 +1,124 @@
-import { useCallback, useState } from 'react';
-import { Pressable, RefreshControl, ScrollView, Text, View } from 'react-native';
-import { useFocusEffect, useRouter } from 'expo-router';
-import { listTransactions, totals, Transaction } from '@/src/db/database';
-import { rial } from '@/src/utils/format';
-import { TransactionRow } from '@/src/components/TransactionRow';
-export default function Home(){const router=useRouter();const[data,setData]=useState({balance:0,income:0,expense:0});const[items,setItems]=useState<Transaction[]>([]);const[refreshing,setRefreshing]=useState(false);const load=useCallback(async()=>{setData(await totals());setItems((await listTransactions()).slice(0,5))},[]);useFocusEffect(useCallback(()=>{load()},[load]));const refresh=async()=>{setRefreshing(true);await load();setRefreshing(false)};return <ScrollView className="flex-1 bg-surface dark:bg-slate-950" refreshControl={<RefreshControl refreshing={refreshing} onRefresh={refresh}/>}> <View className="px-5 pb-10 pt-14"><Text className="font-vazir text-sm text-muted">سلام، خوش آمدید</Text><Text className="mt-1 font-vazir text-2xl font-bold text-ink dark:text-white">وضعیت مالی شما</Text><View className="mt-6 rounded-[32px] bg-brand-600 p-6"><Text className="font-vazir text-sm text-white/80">موجودی کل</Text><Text className="mt-2 font-vazir text-3xl font-bold text-white">{rial(data.balance/10)} تومان</Text><View className="mt-7 flex-row"><View className="flex-1"><Text className="font-vazir text-xs text-white/70">درآمد این ماه</Text><Text className="mt-1 font-vazir text-base font-bold text-white">+ {rial(data.income/10)}</Text></View><View className="flex-1"><Text className="font-vazir text-xs text-white/70">هزینه این ماه</Text><Text className="mt-1 font-vazir text-base font-bold text-white">− {rial(data.expense/10)}</Text></View></View></View><View className="mt-6 flex-row gap-3"><Quick label="هزینه" icon="−" onPress={()=>router.push('/expense')}/><Quick label="درآمد" icon="+" onPress={()=>router.push('/income')}/><Quick label="انتقال" icon="⇄" onPress={()=>router.push('/transfer')}/></View><View className="mt-8 flex-row items-center justify-between"><Text className="font-vazir text-lg font-bold text-ink dark:text-white">تراکنش‌های اخیر</Text><Pressable onPress={()=>router.push('/transactions')}><Text className="font-vazir text-sm font-semibold text-brand-600">مشاهده همه</Text></Pressable></View><View className="mt-3">{items.length?items.map(x=><TransactionRow key={x.id} item={x}/>):<View className="items-center rounded-3xl bg-white px-5 py-10 dark:bg-slate-900"><Text className="font-vazir text-sm text-muted">هنوز تراکنشی ثبت نشده است</Text></View>}</View></View></ScrollView>}
-function Quick({label,icon,onPress}:{label:string;icon:string;onPress:()=>void}){return <Pressable onPress={onPress} className="flex-1 items-center rounded-3xl bg-white p-4 active:opacity-70 dark:bg-slate-900"><Text className="text-2xl font-bold text-brand-600">{icon}</Text><Text className="mt-2 font-vazir text-xs font-semibold text-ink dark:text-white">{label}</Text></Pressable>}
+import { useCallback, useState } from "react";
+import { RefreshControl, Text, View, Pressable } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { useFocusEffect, useRouter } from "expo-router";
+import { listTransactions, totals, Transaction } from "@/src/db/database";
+import { toman, monthName } from "@/src/utils/format";
+import { TransactionRow } from "@/src/components/TransactionRow";
+import { Content, Screen, ScreenScroll, useResponsive } from "@/src/components/layout/Screen";
+import { BalanceHero, EmptyState } from "@/src/components/ui";
+
+export default function Home() {
+  const router = useRouter();
+  const { isWide } = useResponsive();
+  const [data, setData] = useState({ balance: 0, income: 0, expense: 0 });
+  const [items, setItems] = useState<Transaction[]>([]);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const load = useCallback(async () => {
+    setData(await totals());
+    setItems((await listTransactions()).slice(0, 5));
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      load();
+    }, [load]),
+  );
+
+  const refresh = async () => {
+    setRefreshing(true);
+    await load();
+    setRefreshing(false);
+  };
+
+  return (
+    <Screen>
+      <ScreenScroll
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={refresh} tintColor="#059669" />
+        }
+      >
+        <Content className="pt-4">
+          <View className="mb-6 flex-row items-center">
+            <View className="flex-1">
+              <Text className="font-vazir text-sm text-muted">سلام، خوش آمدید</Text>
+              <Text className="mt-1 font-vazir-bold text-2xl text-ink dark:text-ink-inverse">
+                وضعیت مالی شما
+              </Text>
+            </View>
+            <View className="h-12 w-12 items-center justify-center rounded-2xl bg-brand-100 dark:bg-brand-900">
+              <Ionicons name="wallet-outline" size={24} color="#059669" />
+            </View>
+          </View>
+          <View className={isWide ? "flex-row gap-6" : ""}>
+            <View className={isWide ? "w-[42%]" : ""}>
+              <BalanceHero
+                balance={toman(data.balance)}
+                income={`+ ${toman(data.income)}`}
+                expense={`− ${toman(data.expense)}`}
+                incomeLabel={`درآمد ${monthName()}`}
+                expenseLabel={`هزینه ${monthName()}`}
+              />
+              <View className="mt-4 flex-row gap-3">
+                <Quick label="هزینه" icon="remove" onPress={() => router.push("/expense")} />
+                <Quick label="درآمد" icon="add" onPress={() => router.push("/income")} />
+                <Quick
+                  label="انتقال"
+                  icon="swap-horizontal"
+                  onPress={() => router.push("/transfer")}
+                />
+              </View>
+            </View>
+            <View className={isWide ? "flex-1" : "mt-8"}>
+              <View className="mb-3 flex-row items-center justify-between">
+                <Text className="font-vazir-bold text-lg text-ink dark:text-ink-inverse">
+                  تراکنش‌های اخیر
+                </Text>
+                <Pressable onPress={() => router.push("/transactions")}>
+                  <Text className="font-vazir-semibold text-sm text-brand-600">مشاهده همه</Text>
+                </Pressable>
+              </View>
+              {items.length ? (
+                items.map((item) => (
+                  <TransactionRow
+                    key={item.id}
+                    item={item}
+                    onPress={() => router.push(`/transaction/${item.id}`)}
+                  />
+                ))
+              ) : (
+                <EmptyState
+                  title="هنوز تراکنشی ثبت نشده"
+                  description="اولین درآمد یا هزینه خود را ثبت کنید."
+                />
+              )}
+            </View>
+          </View>
+        </Content>
+      </ScreenScroll>
+    </Screen>
+  );
+}
+
+function Quick({
+  label,
+  icon,
+  onPress,
+}: {
+  label: string;
+  icon: keyof typeof Ionicons.glyphMap;
+  onPress: () => void;
+}) {
+  return (
+    <Pressable
+      onPress={onPress}
+      className="flex-1 items-center rounded-3xl border border-line bg-panel p-4 active:opacity-70 dark:border-line-dark dark:bg-panel-dark"
+    >
+      <Ionicons name={icon} size={22} color="#059669" />
+      <Text className="mt-2 font-vazir-semibold text-xs text-ink dark:text-ink-inverse">
+        {label}
+      </Text>
+    </Pressable>
+  );
+}
