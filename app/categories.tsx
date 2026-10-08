@@ -85,7 +85,7 @@ export default function Categories() {
       </ChipRow>
       <View className="mt-4 flex-row items-end gap-3">
         <View className="items-center">
-          <Text className="mb-2 font-sans-semibold text-sm text-ink">آیکون</Text>
+          <Text className="mb-2 font-sans-semibold text-sm text-ink text-left">آیکون</Text>
           <View className="h-14 w-14 items-center justify-center rounded-2xl border border-line bg-panel">
             <TextInput
               value={icon}
@@ -131,7 +131,7 @@ export default function Categories() {
           }}
           className="mt-3 items-center py-2"
         >
-          <Text className="font-sans-semibold text-sm text-muted">انصراف</Text>
+          <Text className="font-sans-semibold text-sm text-muted text-left">انصراف</Text>
         </Pressable>
       ) : null}
     </SurfaceCard>
@@ -181,14 +181,14 @@ export default function Categories() {
                             setIcon(item.icon);
                           }}
                         >
-                          <Text className="font-sans-semibold text-xs text-accent">ویرایش</Text>
+                          <Text className="font-sans-semibold text-xs text-accent text-left">ویرایش</Text>
                         </Pressable>
                         <Pressable onPress={() => archive(item)}>
-                          <Text className="font-sans-semibold text-xs text-error">بایگانی</Text>
+                          <Text className="font-sans-semibold text-xs text-error text-left">بایگانی</Text>
                         </Pressable>
                       </View>
                     ) : (
-                      <Text className="font-sans text-xs text-muted">پیش‌فرض</Text>
+                      <Text className="font-sans text-xs text-muted text-left">پیش‌فرض</Text>
                     )}
                   </SurfaceCard>
                 ))

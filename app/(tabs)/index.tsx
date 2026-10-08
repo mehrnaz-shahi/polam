@@ -45,8 +45,8 @@ export default function Home() {
         <Content className="pb-36 pt-4">
           <View className="mb-6 flex-row items-center">
             <View className="flex-1 flex items-start">
-              <Text className="font-sans text-sm text-muted">سلام، خوش آمدید</Text>
-              <Text className="mt-1 font-sans-bold text-2xl text-ink">
+              <Text className="font-sans text-sm text-muted text-left">سلام، خوش آمدید</Text>
+              <Text className="mt-1 font-sans-bold text-2xl text-ink text-left">
                 وضعیت مالی شما
               </Text>
             </View>
@@ -61,7 +61,7 @@ export default function Home() {
                 incomeLabel={`درآمد ${monthName()}`}
                 expenseLabel={`هزینه ${monthName()}`}
               />
-              <View className="mt-4 flex-row gap-3">
+              <View className="mt-5 flex-row">
                 <Quick label="هزینه" icon={Minus} onPress={() => router.push("/expense")} />
                 <Quick label="درآمد" icon={Plus} onPress={() => router.push("/income")} />
                 <Quick
@@ -73,21 +73,24 @@ export default function Home() {
             </View>
             <View className={isWide ? "flex-1" : "mt-8"}>
               <View className="mb-3 flex-row items-center justify-between">
-                <Text className="font-sans-bold text-lg text-ink">
-                  تراکنش‌های اخیر
-                </Text>
+                <Text className="font-sans-bold text-lg text-ink text-left">فعالیت اخیر</Text>
                 <Pressable onPress={() => router.push("/transactions")}>
-                  <Text className="font-sans-semibold text-sm text-accent">مشاهده همه</Text>
+                  <Text className="font-sans-semibold text-sm text-accent text-left">مشاهده همه</Text>
                 </Pressable>
               </View>
               {items.length ? (
-                items.map((item) => (
-                  <TransactionRow
-                    key={item.id}
-                    item={item}
-                    onPress={() => router.push(`/transaction/${item.id}`)}
-                  />
-                ))
+                <View className="rounded-[28px] border border-line bg-panel px-4">
+                  {items.map((item, index) => (
+                    <View key={item.id}>
+                      {index > 0 ? <View className="h-px bg-line" /> : null}
+                      <TransactionRow
+                        grouped
+                        item={item}
+                        onPress={() => router.push(`/transaction/${item.id}`)}
+                      />
+                    </View>
+                  ))}
+                </View>
               ) : (
                 <EmptyState
                   title="هنوز تراکنشی ثبت نشده"
@@ -114,14 +117,11 @@ function Quick({
 }) {
   const colors = usePalette();
   return (
-    <Pressable
-      onPress={onPress}
-      className="flex-1 items-center rounded-2xl border border-line bg-panel p-4 active:opacity-70"
-    >
-      <Icon size={20} color={colors.primary} strokeWidth={1.75} />
-      <Text className="mt-2 font-sans-semibold text-xs text-ink">
-        {label}
-      </Text>
+    <Pressable onPress={onPress} className="flex-1 items-center active:opacity-70">
+      <View className="h-14 w-14 items-center justify-center rounded-full border border-line bg-panel">
+        <Icon size={22} color={colors.primary} strokeWidth={1.75} />
+      </View>
+      <Text className="mt-2 font-sans-semibold text-xs text-ink text-left">{label}</Text>
     </Pressable>
   );
 }

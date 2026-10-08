@@ -69,10 +69,10 @@ export default function Settings() {
                       <Icon size={20} color={colors.primary} strokeWidth={1.75} />
                     </View>
                     <View className="ms-3 flex-1 items-start">
-                      <Text className="font-sans-semibold text-sm text-ink">
+                      <Text className="font-sans-semibold text-sm text-ink text-left">
                         {option.label}
                       </Text>
-                      <Text className="mt-1 font-sans text-xs text-muted">
+                      <Text className="mt-1 font-sans text-xs text-muted text-left">
                         {option.description}
                       </Text>
                     </View>
@@ -95,7 +95,7 @@ export default function Settings() {
               </Text>
               <View className="mt-5 flex-row items-center">
                 <ShieldCheck size={20} color={colors.primary} strokeWidth={1.75} />
-                <Text className="mr-2 font-sans-semibold text-xs text-accent">
+                <Text className="mr-2 font-sans-semibold text-xs text-accent text-left">
                   داده‌های شما خصوصی می‌مانند
                 </Text>
               </View>

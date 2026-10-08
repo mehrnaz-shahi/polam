@@ -177,11 +177,11 @@ export function ScreenHeader({
         </Pressable>
       ) : null}
       <View className={onBack ? "ms-4 flex-1 items-start" : "flex-1 items-start"}>
-        <Text className="font-sans-bold text-2xl text-ink">
+        <Text className="font-sans-bold text-2xl text-ink text-left pt-1">
           {title}
         </Text>
         {subtitle ? (
-          <Text className="mt-1 font-sans text-sm text-muted">{subtitle}</Text>
+          <Text className="mt-1 font-sans text-sm text-muted text-left">{subtitle}</Text>
         ) : null}
       </View>
       {trailing ?? (onBack ? <View className="w-11" /> : null)}

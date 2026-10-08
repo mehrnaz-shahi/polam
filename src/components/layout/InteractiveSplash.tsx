@@ -111,7 +111,7 @@ export function InteractiveSplash({ onDone }: { onDone: () => void }) {
           </View>
         </Animated.View>
         <View className="mt-8 h-14 w-full items-center justify-center rounded-2xl bg-brand-700">
-          <Text className="font-sans-bold text-base text-white">شروع</Text>
+          <Text className="font-sans-bold text-base text-white text-left">شروع</Text>
         </View>
       </Pressable>
     </Animated.View>

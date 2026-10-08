@@ -144,7 +144,7 @@ export default function Transactions() {
           }}
           className="mt-2 items-center py-2"
         >
-          <Text className="font-sans-semibold text-xs text-muted">پاک کردن فیلترها</Text>
+          <Text className="font-sans-semibold text-xs text-muted text-left">پاک کردن فیلترها</Text>
         </Pressable>
       ) : null}
     </SurfaceCard>
@@ -207,7 +207,7 @@ export default function Transactions() {
               ListFooterComponent={
                 transfers.length > 0 ? (
                   <SurfaceCard className="mt-3">
-                    <Text className="font-sans-bold text-base text-ink">
+                    <Text className="font-sans-bold text-base text-ink text-left">
                       انتقال‌های اخیر
                     </Text>
                     {transfers.slice(0, 5).map((t) => (

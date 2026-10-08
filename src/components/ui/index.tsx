@@ -61,7 +61,7 @@ export function PrimaryButton({
       ) : (
         <>
           {icon ? <Ionicons name={icon} size={19} color="white" /> : null}
-          <Text className={`${icon ? "mr-2" : ""} font-sans-bold text-white`}>
+          <Text className={`${icon ? "mr-2" : ""} font-sans-bold text-white text-left`}>
             {title}
           </Text>
         </>
@@ -152,7 +152,7 @@ export function Field({
       <Text className="mb-2 font-sans-semibold text-sm text-ink text-left">{label}</Text>
       <Input invalid={Boolean(error)} multiline={props.multiline} {...props} />
       {error ? (
-        <Text className="mt-1 font-sans text-xs text-error">{error}</Text>
+        <Text className="mt-1 font-sans text-xs text-error text-left">{error}</Text>
       ) : null}
     </View>
   );
@@ -204,7 +204,7 @@ export function FilterChip({
     >
       {icon ? <Text className="ml-1">{icon}</Text> : null}
       <Text
-        className={`font-sans-semibold text-xs ${
+        className={`font-sans-semibold text-xs text-left ${
           selected ? "text-white" : "text-ink"
         }`}
       >
@@ -246,7 +246,7 @@ export function SegmentedControl<T extends string>({
           }`}
         >
           <Text
-            className={`font-sans-semibold text-sm ${
+            className={`font-sans-semibold text-sm text-left ${
               value === item.value ? "text-accent-strong" : "text-muted"
             }`}
           >
@@ -412,7 +412,7 @@ export function DateField({
   const [visible, setVisible] = useState(false);
   return (
     <View className="mb-4 items-start">
-      <Text className="mb-2 font-sans-semibold text-sm text-ink">{label}</Text>
+      <Text className="mb-2 font-sans-semibold text-sm text-ink text-left">{label}</Text>
       <Pressable
         onPress={() => setVisible(true)}
         className="min-h-14 flex-row items-center rounded-2xl border border-line bg-panel px-4"
@@ -456,9 +456,9 @@ export function MenuCard({
     >
       <DoodleIcon name={icon} size={44} />
       <View className="mr-4 flex-1 items-start">
-        <Text className="font-sans-bold text-base text-ink">{title}</Text>
+        <Text className="font-sans-bold text-base text-ink text-left">{title}</Text>
         {description ? (
-          <Text className="mt-1 font-sans text-xs text-muted">
+          <Text className="mt-1 font-sans text-xs text-muted text-left">
             {description}
           </Text>
         ) : null}
@@ -485,11 +485,11 @@ export function StatCard({
         : "text-ink";
   return (
     <SurfaceCard className="flex-1 items-start">
-      <Text className="font-sans text-xs text-muted">{title}</Text>
+      <Text className="font-sans text-xs text-muted text-left">{title}</Text>
       <Text
         numberOfLines={1}
         adjustsFontSizeToFit
-        className={`mt-2 font-sans-bold text-base ${color}`}
+        className={`mt-2 font-sans-bold text-base text-left ${color}`}
       >
         {value}
       </Text>
@@ -511,40 +511,33 @@ export function BalanceHero({
   expenseLabel: string;
 }) {
   return (
-    <View className="overflow-hidden rounded-3xl bg-brand-600 p-5 flex-col items-start">
-      <View className="absolute -start-8 -top-10 h-36 w-36 rounded-full bg-white/10" />
-      <View className="absolute -bottom-12 -end-6 h-28 w-28 rounded-full bg-white/5" />
-      <Text className="font-sans text-sm text-white/80">موجودی کل</Text>
+    <View className="overflow-hidden rounded-[28px] bg-brand-900 p-5">
+      <View className="absolute -start-10 -top-12 h-40 w-40 rounded-full bg-white/10" />
+      <View className="absolute -bottom-16 -end-8 h-36 w-36 rounded-full bg-brand-500/30" />
+      <View className="flex-row items-center justify-between">
+        <Text className="font-sans text-sm text-white/75 text-left">موجودی کل</Text>
+        <View className="rounded-full bg-white/15 px-3 py-1">
+          <Text className="font-sans text-xs text-white text-left">پولکی</Text>
+        </View>
+      </View>
       <Text
         numberOfLines={1}
         adjustsFontSizeToFit
-        className="mt-2 font-sans-bold text-3xl text-white"
+        className="mt-4 py-2 font-sans-bold text-4xl text-white text-left"
       >
         {balance}
       </Text>
-      <Text className="mt-1 font-sans text-xs text-white/70">
-        مانده حساب‌های فعال
-      </Text>
-      <View className="mt-7 flex-row gap-3">
-        <View className="flex-1 rounded-2xl bg-white/10 p-3 items-start">
-          <Text className="font-sans text-xs text-white/70">{incomeLabel}</Text>
-          <Text
-            numberOfLines={1}
-            adjustsFontSizeToFit
-            className="mt-1 font-sans-bold text-sm text-white"
-          >
+      <Text className="mt-1 font-sans text-xs text-white/60 text-left">مانده حساب‌های فعال</Text>
+      <View className="mt-6 flex-row gap-3">
+        <View className="flex-1 rounded-2xl bg-white/10 p-3">
+          <Text className="font-sans text-xs text-white/70 text-left">{incomeLabel}</Text>
+          <Text numberOfLines={1} adjustsFontSizeToFit className="mt-1 font-sans-bold text-sm text-white text-left">
             {income}
           </Text>
         </View>
-        <View className="flex-1 rounded-2xl bg-white/10 p-3 items-start">
-          <Text className="font-sans text-xs text-white/70">
-            {expenseLabel}
-          </Text>
-          <Text
-            numberOfLines={1}
-            adjustsFontSizeToFit
-            className="mt-1 font-sans-bold text-sm text-white"
-          >
+        <View className="flex-1 rounded-2xl bg-white/10 p-3">
+          <Text className="font-sans text-xs text-white/70 text-left">{expenseLabel}</Text>
+          <Text numberOfLines={1} adjustsFontSizeToFit className="mt-1 font-sans-bold text-sm text-white text-left">
             {expense}
           </Text>
         </View>
@@ -561,17 +554,17 @@ export function TransferRow({ item }: { item: Transfer }) {
         <Ionicons name="swap-horizontal" size={18} color={colors.primary} />
       </View>
       <View className="mr-3 flex-1">
-        <Text numberOfLines={1} className="font-sans-semibold text-sm text-ink">
+        <Text numberOfLines={1} className="font-sans-semibold text-sm text-ink text-left">
           {item.source_name} ← {item.destination_name}
         </Text>
-        <Text numberOfLines={1} className="mt-1 font-sans text-xs text-muted">
+        <Text numberOfLines={1} className="mt-1 font-sans text-xs text-muted text-left">
           {item.note || "انتقال وجه"}
         </Text>
       </View>
       <Text
         numberOfLines={1}
         adjustsFontSizeToFit
-        className="max-w-[36%] font-sans-bold text-xs text-ink"
+        className="max-w-[36%] font-sans-bold text-xs text-ink text-left"
       >
         {toman(item.amount)}
       </Text>

@@ -94,7 +94,7 @@ export default function Accounts() {
             }}
             className="mt-3 items-center py-2"
           >
-            <Text className="font-sans-semibold text-sm text-muted">انصراف</Text>
+            <Text className="font-sans-semibold text-sm text-muted text-left">انصراف</Text>
           </Pressable>
         ) : null}
       </View>
@@ -124,17 +124,17 @@ export default function Accounts() {
                     <View className="flex-row items-center">
                       <DoodleIcon name="wallet" size={40} />
                       <View className="mr-3 flex-1 items-start">
-                        <Text className="font-sans-bold text-base text-ink">
+                        <Text className="font-sans-bold text-base text-ink text-left">
                           {account.name}
                         </Text>
-                        <Text className="mt-1 font-sans text-xs text-muted">
+                        <Text className="mt-1 font-sans text-xs text-muted text-left">
                           {account.is_archived ? "بایگانی‌شده" : "حساب فعال"}
                         </Text>
                       </View>
                       <Text
                         numberOfLines={1}
                         adjustsFontSizeToFit
-                        className="max-w-[40%] font-sans-bold text-lg text-success"
+                        className="max-w-[40%] font-sans-bold text-lg text-success text-left"
                       >
                         {toman(account.balance)}
                       </Text>
@@ -144,7 +144,7 @@ export default function Accounts() {
                         onPress={() => edit(account)}
                         className="rounded-xl bg-fill px-4 py-2"
                       >
-                        <Text className="font-sans-semibold text-xs text-ink">
+                        <Text className="font-sans-semibold text-xs text-ink text-left">
                           ویرایش
                         </Text>
                       </Pressable>
@@ -152,7 +152,7 @@ export default function Accounts() {
                         onPress={() => toggleArchive(account)}
                         className="rounded-xl bg-fill px-4 py-2"
                       >
-                        <Text className="font-sans-semibold text-xs text-muted">
+                        <Text className="font-sans-semibold text-xs text-muted text-left">
                           {account.is_archived ? "فعال‌سازی" : "بایگانی"}
                         </Text>
                       </Pressable>

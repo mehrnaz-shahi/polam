@@ -31,7 +31,7 @@ if (Platform.OS === "ios" && !I18nManager.isRTL) {
 }
 
 export default function RootLayout() {
-  const [loaded] = useFonts({
+  const [loaded, fontError] = useFonts({
     Estedad: require("../assets/fonts/Estedad-Regular.ttf"),
     EstedadMedium: require("../assets/fonts/Estedad-Medium.ttf"),
     EstedadSemiBold: require("../assets/fonts/Estedad-SemiBold.ttf"),
@@ -54,7 +54,7 @@ export default function RootLayout() {
   }, [applySystem]);
 
   useEffect(() => {
-    if (!loaded) return;
+    if (!loaded && !fontError) return;
     let active = true;
     (async () => {
       try {
@@ -68,9 +68,13 @@ export default function RootLayout() {
     return () => {
       active = false;
     };
-  }, [loaded, hydrate]);
+  }, [loaded, fontError, hydrate]);
 
-  if (!loaded || !ready) return null;
+  useEffect(() => {
+    if ((loaded || fontError) && ready) SplashScreen.hideAsync().catch(() => undefined);
+  }, [loaded, fontError, ready]);
+
+  if ((!loaded && !fontError) || !ready) return null;
 
   const colors = scheme === "dark" ? darkPalette : palette;
 

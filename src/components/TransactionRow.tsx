@@ -8,10 +8,12 @@ export function TransactionRow({
   item,
   onPress,
   onLongPress,
+  grouped = false,
 }: {
   item: Transaction;
   onPress?: () => void;
   onLongPress?: () => void;
+  grouped?: boolean;
 }) {
   const colors = usePalette();
   const income = item.type === "income";
@@ -20,20 +22,22 @@ export function TransactionRow({
       onPress={onPress}
       onLongPress={onLongPress}
       accessibilityRole={onPress ? "button" : undefined}
-      className="mb-3 flex-row items-center rounded-2xl border border-line bg-panel p-4 active:opacity-80"
+      className={`flex-row items-center active:opacity-80 ${
+        grouped ? "py-3" : "mb-3 rounded-2xl border border-line bg-panel p-4"
+      }`}
     >
       <View
-        className={`h-12 w-12 items-center justify-center rounded-2xl ${
+        className={`h-12 w-12 items-center justify-center rounded-full ${
           income ? "bg-success-soft" : "bg-error-soft"
         }`}
       >
         <Text className="text-xl">{item.category_icon}</Text>
       </View>
       <View className="mr-3 flex-1">
-        <Text numberOfLines={1} className="font-sans-semibold text-[15px] text-ink">
+        <Text numberOfLines={1} className="font-sans-semibold text-[15px] text-ink text-left">
           {item.category_name}
         </Text>
-        <Text numberOfLines={1} className="mt-1 font-sans text-xs text-muted">
+        <Text numberOfLines={1} className="mt-1 font-sans text-xs text-muted text-left">
           {item.note || item.account_name} • {shortDate(item.date)}
         </Text>
       </View>
@@ -41,7 +45,7 @@ export function TransactionRow({
         <Text
           numberOfLines={1}
           adjustsFontSizeToFit
-          className={`font-num-bold text-sm ${income ? "text-success" : "text-error"}`}
+          className={`font-num-bold text-sm text-left ${income ? "text-success" : "text-error"}`}
         >
           {income ? "+" : "−"} {rial(item.amount / 10)} تومان
         </Text>

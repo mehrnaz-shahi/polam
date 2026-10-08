@@ -91,10 +91,10 @@ export default function Transfer() {
               <AmountInput value={amount} onChangeText={setAmount} />
               {isWide ? (
                 <SurfaceCard>
-                  <Text className="font-sans-bold text-base text-ink">
+                  <Text className="font-sans-bold text-base text-ink text-left">
                     انتقال داخلی
                   </Text>
-                  <Text className="mt-2 font-sans text-sm leading-7 text-muted">
+                  <Text className="mt-2 font-sans text-sm leading-7 text-muted text-left">
                     انتقال بین حساب‌ها روی درآمد و هزینه ماهانه اثری ندارد.
                   </Text>
                 </SurfaceCard>
@@ -111,7 +111,7 @@ export default function Transfer() {
                 placeholder="مثلاً انتقال به حساب پس‌انداز"
               />
               {error ? (
-                <Text className="mb-3 font-sans text-sm text-error">{error}</Text>
+                <Text className="mb-3 font-sans text-sm text-error text-left">{error}</Text>
               ) : null}
               <PrimaryButton
                 title="انتقال وجه"
