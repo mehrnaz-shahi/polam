@@ -533,7 +533,7 @@ export function BalanceHero({
       <View className="flex-row items-center justify-between">
         <Text className="font-sans text-sm text-white/75 text-left">موجودی کل</Text>
         <View className="rounded-full bg-white/15 px-3 py-1">
-          <Text className="font-sans text-xs text-white text-left">پولکی</Text>
+          <Text className="font-sans text-xs text-white text-left">پولام</Text>
         </View>
       </View>
       <Text

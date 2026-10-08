@@ -87,10 +87,10 @@ export default function Settings() {
             </View>
             <SurfaceCard className={isWide ? "w-[42%] self-start" : "mt-5"}>
               <Text className="font-sans-bold text-base text-ink text-left">
-                پولکی آفلاین
+                پولام آفلاین
               </Text>
               <Text className="mt-2 font-sans text-xs leading-6 text-muted text-left">
-                تمام داده‌های مالی در همین دستگاه نگهداری می‌شوند و Phase 1 بدون حساب کاربری و بدون
+                تمام داده‌های مالی در همین دستگاه نگهداری می‌شوند و بدون حساب کاربری و بدون
                 اتصال به سرور کار می‌کند.
               </Text>
               <View className="mt-5 flex-row items-center">

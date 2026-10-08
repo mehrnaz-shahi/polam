@@ -28,7 +28,7 @@ export default function Reminders() {
     }
     const due = new Date(date);
     due.setHours(9, 0, 0, 0);
-    const notificationId = await scheduleLocalReminder(title.trim(), "یادآوری مالی پولکی", due);
+    const notificationId = await scheduleLocalReminder(title.trim(), "یادآوری مالی پولام", due);
     await addReminder({
       title: title.trim(),
       type: "custom",

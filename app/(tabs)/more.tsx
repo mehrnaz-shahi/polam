@@ -7,7 +7,7 @@ export default function More() {
   const router = useRouter();
   const { isWide } = useResponsive();
   return (
-    <Screen header={<ScreenHeader title="بیشتر" subtitle="مدیریت و شخصی‌سازی پولکی" />}>
+    <Screen header={<ScreenHeader title="بیشتر" subtitle="مدیریت و شخصی‌سازی پولام" />}>
       <ScreenScroll>
         <Content className="pb-36">
           <View className={isWide ? "flex-row flex-wrap gap-4" : "gap-3"}>
