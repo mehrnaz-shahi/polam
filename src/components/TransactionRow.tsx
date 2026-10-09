@@ -33,7 +33,7 @@ export function TransactionRow({
       >
         <Text className="text-xl">{item.category_icon}</Text>
       </View>
-      <View className="mr-3 flex-1">
+      <View className="ms-3 flex-1">
         <Text numberOfLines={1} className="font-sans-semibold text-[15px] text-ink text-left">
           {item.category_name}
         </Text>

@@ -116,9 +116,10 @@ export function JalaliDatePicker({
               className="flex-1 items-center justify-center"
             >
               <View
-                className={`h-10 w-10 items-center justify-center rounded-full ${
+                className={`items-center justify-center overflow-hidden ${
                   cell.isSelected ? "bg-brand-700" : cell.isToday ? "border border-brand-500" : ""
                 } ${cell.isOutOfMonth ? "opacity-30" : ""}`}
+                style={{ width: 40, height: 40, borderRadius: 20 }}
               >
                 <Text
                   className={`text-center font-sans text-sm ${
