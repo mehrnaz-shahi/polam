@@ -1,16 +1,17 @@
 {
   "expo": {
     "name": "پولام",
-    "slug": "poolaki-offline",
+    "slug": "polam-offline",
     "version": "1.0.0",
     "orientation": "default",
     "userInterfaceStyle": "automatic",
-    "scheme": "poolaki",
+    "scheme": "polam",
     "plugins": [
       "expo-router",
       "expo-sqlite",
       "expo-font",
       "expo-notifications",
+      "./modules/polam-sms/app.plugin.js",
       [
         "expo-splash-screen",
         {
@@ -24,7 +25,7 @@
     ],
     "experiments": { "typedRoutes": true },
     "ios": { "supportsTablet": true },
-    "android": { "package": "com.poolaki.offline" },
+    "android": { "package": "com.polam.offline" },
     "web": { "bundler": "metro" }
   }
 }

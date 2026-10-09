@@ -9,6 +9,7 @@ import { StatusBar } from "expo-status-bar";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { InteractiveSplash } from "@/src/components/layout/InteractiveSplash";
 import { getDb, getTheme } from "@/src/db/database";
+import { startBankSmsListener } from "@/src/utils/smsSync";
 import { useAppStore } from "@/src/stores/app";
 import { darkPalette, palette } from "@/src/theme/colors";
 import { themes } from "@/src/theme/themes";
@@ -21,13 +22,13 @@ I18nManager.forceRTL(true);
 // Expo Go reads iOS layout direction when the native surface is created.
 // forceRTL is stored immediately, but that surface stays LTR until it is created again.
 if (Platform.OS === "ios" && !I18nManager.isRTL) {
-  const tries = Number(Settings.get("poolaki_ios_rtl") ?? 0);
+  const tries = Number(Settings.get("polam_ios_rtl") ?? 0);
   if (tries < 1) {
-    Settings.set({ poolaki_ios_rtl: tries + 1 });
+    Settings.set({ polam_ios_rtl: tries + 1 });
     void reloadAppAsync("Enable RTL layout").catch(() => {});
   }
 } else if (Platform.OS === "ios" && I18nManager.isRTL) {
-  Settings.set({ poolaki_ios_rtl: 0 });
+  Settings.set({ polam_ios_rtl: 0 });
 }
 
 export default function RootLayout() {
@@ -73,6 +74,11 @@ export default function RootLayout() {
   useEffect(() => {
     if ((loaded || fontError) && ready) SplashScreen.hideAsync().catch(() => undefined);
   }, [loaded, fontError, ready]);
+
+  useEffect(() => {
+    if (!ready) return;
+    return startBankSmsListener();
+  }, [ready]);
 
   if ((!loaded && !fontError) || !ready) return null;
 

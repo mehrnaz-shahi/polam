@@ -93,6 +93,14 @@ export default function More() {
             </View>
             <View className={isWide ? "w-[48%]" : ""}>
               <MenuCard
+                title="پیامک بانک"
+                description="ثبت تراکنش از پیامک بانک"
+                icon="bank"
+                onPress={() => router.push("/bank-sms")}
+              />
+            </View>
+            <View className={isWide ? "w-[48%]" : ""}>
+              <MenuCard
                 title="تنظیمات"
                 description="ظاهر و اطلاعات برنامه"
                 icon="puzzle"

@@ -119,6 +119,21 @@ export type Reminder = {
   is_active: number;
   notification_id: string | null;
 };
+export type BankSender = {
+  id: string;
+  name: string;
+  account_id: string;
+  account_name?: string;
+};
+export type SmsImport = {
+  id: string;
+  fingerprint: string;
+  sender: string;
+  body: string;
+  received_at: string;
+  status: "imported" | "needs_review";
+  transaction_id: string | null;
+};
 
 let opening: Promise<SQLite.SQLiteDatabase> | null = null;
 const now = () => new Date().toISOString();
@@ -148,7 +163,7 @@ function persianMonthStarts(count: number) {
 export function getDb() {
   if (!opening) {
     opening = (async () => {
-      const database = await SQLite.openDatabaseAsync("poolaki.db");
+      const database = await SQLite.openDatabaseAsync("polam.db");
       await database.execAsync(
         "PRAGMA journal_mode=WAL; PRAGMA foreign_keys=ON;",
       );
@@ -224,6 +239,15 @@ async function migrate(d: SQLite.SQLiteDatabase) {
       CREATE INDEX IF NOT EXISTS idx_reminders_due ON reminders(due_at,is_active);
     `);
     await d.runAsync("INSERT OR IGNORE INTO schema_migrations(version) VALUES(4)");
+    version = 4;
+  }
+  if (version < 5) {
+    await d.execAsync(`
+      CREATE TABLE IF NOT EXISTS bank_senders(id TEXT PRIMARY KEY NOT NULL,name TEXT NOT NULL,account_id TEXT NOT NULL,created_at TEXT NOT NULL,updated_at TEXT NOT NULL,FOREIGN KEY(account_id) REFERENCES accounts(id));
+      CREATE TABLE IF NOT EXISTS sms_imports(id TEXT PRIMARY KEY NOT NULL,fingerprint TEXT NOT NULL UNIQUE,sender TEXT NOT NULL,body TEXT NOT NULL,received_at TEXT NOT NULL,status TEXT NOT NULL CHECK(status IN ('imported','needs_review')),transaction_id TEXT,created_at TEXT NOT NULL);
+      CREATE INDEX IF NOT EXISTS idx_sms_imports_status ON sms_imports(status);
+    `);
+    await d.runAsync("INSERT OR IGNORE INTO schema_migrations(version) VALUES(5)");
   }
   await seed(d);
 }
@@ -1148,5 +1172,89 @@ export async function deleteReminder(idv: string) {
     "UPDATE reminders SET is_active=0,updated_at=? WHERE id=?",
     now(),
     idv,
+  );
+}
+
+export async function listBankSenders() {
+  const d = await getDb();
+  return d.getAllAsync<BankSender>(
+    "SELECT s.id,s.name,s.account_id,a.name account_name FROM bank_senders s JOIN accounts a ON a.id=s.account_id ORDER BY s.created_at DESC",
+  );
+}
+export async function addBankSender(input: { name: string; accountId: string }) {
+  const d = await getDb();
+  const t = now();
+  return d.runAsync(
+    "INSERT INTO bank_senders VALUES (?,?,?,?,?)",
+    id(),
+    input.name,
+    input.accountId,
+    t,
+    t,
+  );
+}
+export async function deleteBankSender(idv: string) {
+  const d = await getDb();
+  return d.runAsync("DELETE FROM bank_senders WHERE id=?", idv);
+}
+export async function ensureSmsCategory(type: "expense" | "income") {
+  const d = await getDb();
+  const existing = await d.getFirstAsync<{ id: string }>(
+    "SELECT id FROM categories WHERE name=? AND type=? AND is_archived=0 LIMIT 1",
+    "پیامک بانکی",
+    type,
+  );
+  if (existing) return existing.id;
+  const max = await d.getFirstAsync<{ n: number }>(
+    "SELECT COALESCE(MAX(sort_order),-1)+1 n FROM categories WHERE type=?",
+    type,
+  );
+  const categoryId = id();
+  await d.runAsync(
+    "INSERT INTO categories VALUES (?,?,?,?,?,?,?,?,?)",
+    categoryId,
+    "پیامک بانکی",
+    type,
+    "🏦",
+    "#4B8D88",
+    null,
+    max?.n ?? 0,
+    0,
+    0,
+  );
+  return categoryId;
+}
+export async function beginSmsImport(input: {
+  fingerprint: string;
+  sender: string;
+  body: string;
+  receivedAt: string;
+}) {
+  const d = await getDb();
+  const result = await d.runAsync(
+    "INSERT OR IGNORE INTO sms_imports VALUES (?,?,?,?,?,?,?,?)",
+    id(),
+    input.fingerprint,
+    input.sender,
+    input.body,
+    input.receivedAt,
+    "needs_review",
+    null,
+    now(),
+  );
+  return result.changes > 0;
+}
+export async function markSmsImported(fingerprint: string, transactionId: string) {
+  const d = await getDb();
+  return d.runAsync(
+    "UPDATE sms_imports SET status='imported',transaction_id=? WHERE fingerprint=?",
+    transactionId,
+    fingerprint,
+  );
+}
+export async function listSmsReviews() {
+  const d = await getDb();
+  return d.getAllAsync<SmsImport>(
+    "SELECT id,fingerprint,sender,body,received_at,status,transaction_id FROM sms_imports WHERE status='needs_review' ORDER BY received_at DESC LIMIT 20",
   );
 }
